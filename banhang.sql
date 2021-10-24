@@ -43,10 +43,6 @@ CREATE TABLE `Customer_Contact` (
 CREATE TABLE `Oders` (
   `id` int PRIMARY KEY,
   `user_id` int,
-  `fullname` varchar(255),
-  `email` varchar(255),
-  `phone_number` varchar(255),
-  `address` varchar(255),
   `note` varchar(255),
   `order_date` datetime,
   `status` int,
@@ -57,7 +53,6 @@ CREATE TABLE `Order_Detail` (
   `id` int PRIMARY KEY,
   `order_id` int,
   `product_id` int,
-  `price` int,
   `num` int,
   `total_money` int
 );
