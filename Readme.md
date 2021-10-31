@@ -183,7 +183,7 @@ ALTER TABLE `Order_Detail` ADD FOREIGN KEY (`product_id`) REFERENCES `Product` (
 
 ALTER TABLE `Order_Detail` ADD FOREIGN KEY (`order_id`) REFERENCES `Oders` (`id`);
 
-ALTER TABLE `Oders` ADD FOREIGN KEY (`user_id`) REFERENCES `User` (`id`);
+ALTER TABLE `Oders` ADD FOREIGN KEY (`user_id`) REFERENCES `User` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 ALTER TABLE `Comment` ADD FOREIGN KEY (`user_id`) REFERENCES `User` (`id`);
 ```
@@ -232,7 +232,7 @@ ALTER TABLE `Comment` ADD FOREIGN KEY (`user_id`) REFERENCES `User` (`id`);
 - Request: {
     "action"    : "register",
     "fullname:  : "Dinh Nhu Tan",
-    "phone"     : "0123456789",
+    "phone_number"     : "0123456789",
     "address"   : "Viet Nam",
     "email"     : "nhutan2001@gmail.com",
     "password"  : "123456789"
@@ -258,14 +258,14 @@ ALTER TABLE `Comment` ADD FOREIGN KEY (`user_id`) REFERENCES `User` (`id`);
         {
             "id"        : "0",
             "fullname:  : "Dinh Nhu Tan",
-            "phone"     : "0123456789",
+            "phone_number"     : "0123456789",
             "address"   : "Viet Nam",
             "email"     : "nhutan2001@gmail.com",
         },
         {
             "id"        : "1",
             "fullname:  : "Dinh Nhu Tan",
-            "phone"     : "0123456789",
+            "phone_number"     : "0123456789",
             "address"   : "Viet Nam",
             "email"     : "nhutan2001@gmail.com",
         }
@@ -297,7 +297,7 @@ ALTER TABLE `Comment` ADD FOREIGN KEY (`user_id`) REFERENCES `User` (`id`);
     "action"    : "edit",
     "id"        : "1",
     "fullname:  : "Dinh Nhu Tan",
-    "phone"     : "0123456789",
+    "phone_number"     : "0123456789",
     "address"   : "Viet Nam",
     "email"     : "nhutan2001@gmail.com",
     "password"  : "123456789"

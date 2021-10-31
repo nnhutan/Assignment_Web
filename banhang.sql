@@ -1,10 +1,10 @@
 CREATE TABLE `Role` (
-  `id` int PRIMARY KEY,
+  `id` int PRIMARY KEY AUTO_INCREMENT,
   `name` varchar(255)
 );
 
 CREATE TABLE `User` (
-  `id` int PRIMARY KEY,
+  `id` int PRIMARY KEY AUTO_INCREMENT,
   `fullname` varchar(255),
   `email` varchar(255),
   `phone_number` varchar(255),
@@ -15,13 +15,20 @@ CREATE TABLE `User` (
   `updated_at` datetime
 );
 
+CREATE TABLE `Tokens` (
+	`user_id` int REFERENCES User (id),
+	`token` varchar(32) NOT NULL,
+	`created_at` datetime,
+	PRIMARY KEY (user_id, token)
+)
+
 CREATE TABLE `Category` (
-  `id` int PRIMARY KEY,
+  `id` int PRIMARY KEY AUTO_INCREMENT,
   `name` varchar(255)
 );
 
 CREATE TABLE `Product` (
-  `id` int PRIMARY KEY,
+  `id` int PRIMARY KEY AUTO_INCREMENT,
   `category_id` int,
   `title` varchar(255),
   `price` int,
@@ -33,7 +40,7 @@ CREATE TABLE `Product` (
 );
 
 CREATE TABLE `Customer_Contact` (
-  `id` int PRIMARY KEY,
+  `id` int PRIMARY KEY AUTO_INCREMENT,
   `firstname` varchar(255),
   `lastname` varchar(255),
   `email` varchar(255),
@@ -41,7 +48,7 @@ CREATE TABLE `Customer_Contact` (
 );
 
 CREATE TABLE `Oders` (
-  `id` int PRIMARY KEY,
+  `id` int PRIMARY KEY AUTO_INCREMENT,
   `user_id` int,
   `note` varchar(255),
   `order_date` datetime,
@@ -50,7 +57,7 @@ CREATE TABLE `Oders` (
 );
 
 CREATE TABLE `Order_Detail` (
-  `id` int PRIMARY KEY,
+  `id` int PRIMARY KEY AUTO_INCREMENT,
   `order_id` int,
   `product_id` int,
   `num` int,
@@ -58,7 +65,7 @@ CREATE TABLE `Order_Detail` (
 );
 
 CREATE TABLE `Comment` (
-  `id` int PRIMARY KEY,
+  `id` int PRIMARY KEY AUTO_INCREMENT,
   `user_id` int,
   `content` varchar(255),
   `created_at` datetime,
@@ -66,7 +73,7 @@ CREATE TABLE `Comment` (
 );
 
 CREATE TABLE `Contact_Public` (
-  `id` int PRIMARY KEY,
+  `id` int PRIMARY KEY AUTO_INCREMENT,
   `type` varchar(255),
   `content` varchar(255),
   `created_at` datetime,
@@ -74,7 +81,7 @@ CREATE TABLE `Contact_Public` (
 );
 
 CREATE TABLE `News` (
-  `id` int PRIMARY KEY,
+  `id` int PRIMARY KEY AUTO_INCREMENT,
   `title` varchar(255),
   `content` varchar(255),
   `thumbnail` varchar(255),
