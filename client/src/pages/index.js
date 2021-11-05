@@ -8,6 +8,7 @@ import Product from "./Product";
 import Home from "./Home";
 import Login from "./Login";
 import Signup from "./Signup";
+import Admin from "./admin/Admin";
 
 export {
   Home,
@@ -20,4 +21,5 @@ export {
   Product,
   Login,
   Signup,
+  Admin,
 };

@@ -31,6 +31,30 @@ switch ($action) {
     case 'add':
         addUser();
         break;
+        case 'role':
+            getRole();
+            break;
+}
+
+function getRole() {
+      $user = getUserToken();
+    if ($user == null) {
+        $res = [
+            "status" => -1,
+            "msg" => "Not login!!!",
+            "userList" => [],
+        ];
+        echo json_encode($res);
+        return;
+    }
+    $sql = "select * from role";
+    $result = executeResult($sql);
+     $res = [
+        "status" => 1,
+        "msg" => "success!!!",
+        "roleList" => $result,
+    ];
+    echo json_encode($res); 
 }
 
 function login()
@@ -41,6 +65,7 @@ function login()
         $res = [
             "status" => 1,
             "msg" => "Login successfully!!!",
+            "user" => $user,
         ];
     } else if (!empty($_POST)) {
         $email = getPost('email');
@@ -72,6 +97,7 @@ function login()
             $res = [
                 "status" => 1,
                 "msg" => "Login successfully!!!",
+                "user" => $userExist,
             ];
         }
     } else {
@@ -113,9 +139,9 @@ function register()
         $pwd = getPost('password');
         $phone = getPost('phone');
         $address = getPost('address');
-        if (empty($fullname) || empty($email) || empty($phone) || empty($address) || empty($pwd) || strlen($pwd) < 6) {
+        if (empty($fullname) || empty($email) || empty($pwd) || strlen($pwd) < 6) {
             $res = [
-                "status" => 2,
+                "status" => 3,
                 "msg" => "Register failed!!!",
             ];
         } else {
@@ -129,12 +155,13 @@ function register()
                 $created_at = $updated_at = date('Y-m-d H:i:s');
                 $pwd = getSecurityMD5($pwd);
 
-                $sql = "insert into User (fullname, email, password, role_id, phone_number, address, created_at, updated_at, deleted) values ('$fullname', '$email', '$pwd', 2, '$phone', '$address', '$created_at', '$updated_at', 0)";
+                $sql = "insert into User (fullname, email, password, role_id, phone_number, address, created_at, updated_at) values ('$fullname', '$email', '$pwd', 2, '$phone', '$address', '$created_at', '$updated_at')";
                 execute($sql);
 
                 $res = [
                     "status" => 1,
                     "msg" => "Register successfully!!!",
+                    "sql"=> $sql
                 ];
             }
         }
@@ -189,8 +216,7 @@ function deleteUser()
         $res = [
             "status" => 1,
             "msg" => "success!!!",
-            "id" => $id,
-            "sql" => $sql,
+            "id" => $id
         ];
     } else {
         $res = [
@@ -285,7 +311,7 @@ function addUser()
             $sql = "insert into User(fullname, email, phone_number, address, password, role_id, created_at, updated_at) values ('$fullname', '$email', '$phone_number', '$address', '$password', '$role_id', '$created_at', '$updated_at')";
             execute($sql);
             $res = [
-                "status" => 2,
+                "status" => 1,
                 "msg" => "Add success!!!",
             ];
         } else {

@@ -12,6 +12,7 @@ import {
   Product,
   Login,
   Signup,
+  Admin,
 } from "./pages/index";
 
 function App() {
@@ -46,6 +47,9 @@ function App() {
             </Route>
             <Route path="/signup">
               <Signup />
+            </Route>
+            <Route path="/admin">
+              <Admin />
             </Route>
             <Route path="/">
               <Home />

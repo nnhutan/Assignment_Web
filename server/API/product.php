@@ -1,6 +1,8 @@
 <?php
 session_start();
-header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Origin:  http://localhost:3000');
+header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Credentials: true");
 
 require_once '../database/dbhelper.php';
 require_once '../utils/utility.php';
@@ -24,7 +26,7 @@ switch ($action) {
 
 function listProduct()
 {
-    $sql = 'select Product.*, Category.name as category_name from Product left join Category on Product.category_id = Category.id where Product.deleted = 0';
+    $sql = 'select Product.*, Category.name as category_name from Product left join Category on Product.category_id = Category.id';
     $result = executeResult($sql);
     if (!empty($result)) {
         $res = [
@@ -93,6 +95,7 @@ function editProduct()
         $res = [
             "status" => 1,
             "msg" => "success!!!",
+            "sql"=> $sql
         ];
     } else {
         $res = [

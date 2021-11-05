@@ -8,8 +8,8 @@ function TopSellingPoducts() {
       <h3 className="text-center py-4">Sản phẩm mới</h3>
       <div className="container">
         <div className="row g-2">
-          {listProducts.map((product) => (
-            <div className="col-lg-3">
+          {listProducts.map((product, index) => (
+            <div className="col-lg-3" key={index}>
               <Product product={product} />
             </div>
           ))}
