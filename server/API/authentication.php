@@ -155,13 +155,21 @@ function register()
                 $created_at = $updated_at = date('Y-m-d H:i:s');
                 $pwd = getSecurityMD5($pwd);
 
-                $sql = "insert into User (fullname, email, password, role_id, phone_number, address, created_at, updated_at) values ('$fullname', '$email', '$pwd', 2, '$phone', '$address', '$created_at', '$updated_at')";
+                $sql="select * from user where role_id = 1";
+                $result = executeResult($sql);
+                if(empty($result)){
+                      $sql = "insert into User (fullname, email, password, role_id, phone_number, address, created_at, updated_at) values ('$fullname', '$email', '$pwd', 1, '$phone', '$address', '$created_at', '$updated_at')";
+                }
+                else{
+                        $sql = "insert into User (fullname, email, password, role_id, phone_number, address, created_at, updated_at) values ('$fullname', '$email', '$pwd', 2, '$phone', '$address', '$created_at', '$updated_at')";
+                }
+
+            
                 execute($sql);
 
                 $res = [
                     "status" => 1,
                     "msg" => "Register successfully!!!",
-                    "sql"=> $sql
                 ];
             }
         }

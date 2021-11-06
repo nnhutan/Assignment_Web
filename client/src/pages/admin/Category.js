@@ -21,6 +21,7 @@ function Category({ clickHandler, currUser }) {
   useEffect(() => {
     getData();
   }, []);
+
   const closeHandler = () => {
     setCategory({ name: "" });
     setStatus({

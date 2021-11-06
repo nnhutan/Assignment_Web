@@ -33,7 +33,6 @@ function Admin() {
           { withCredentials: true }
         )
         .then((res) => {
-          console.log(res.data);
           if (res.data.status === 1)
             setState({ isLoggedIn: true, user: res.data.user });
           else setState({ isLoggedIn: false, user: {} });
@@ -59,7 +58,7 @@ function Admin() {
       });
   };
 
-  return state.isLoggedIn ? (
+  return state.isLoggedIn && state.user.role_id === "1" ? (
     <Router>
       <div>
         <Switch>
