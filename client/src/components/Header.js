@@ -94,7 +94,13 @@ function Header({ currPage }) {
                   </div>
                 </form>
                 <Link to="/cart">
-                  <button className="btn btn-outline-primary rounded-circle position-relative ms-4">
+                  <button
+                    className={
+                      currPage === "cart"
+                        ? "btn btn-outline-primary rounded-circle position-relative ms-4 active"
+                        : "btn btn-outline-primary rounded-circle position-relative ms-4"
+                    }
+                  >
                     <i className="bi bi-cart"></i>
                     <span className="position-absolute top-1 start-100 translate-middle bg-danger border border-light rounded-circle text-white px-2">
                       2<span className="visually-hidden">New alerts</span>
