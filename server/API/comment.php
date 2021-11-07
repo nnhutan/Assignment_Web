@@ -1,6 +1,7 @@
 <?php
 session_start();
-header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Origin:  http://localhost:3000');
+header("Access-Control-Allow-Headers: Content-Type");
 
 require_once '../database/dbhelper.php';
 require_once '../utils/utility.php';
@@ -24,19 +25,19 @@ switch ($action) {
 
 function listComment()
 {
-    $sql = "select * from comment left join user on user_id = id";
+    $sql = "select comment.*, user.fullname, product.title from comment, user, product where comment.user_id = user.id and comment.product_id = product.id";
     $result = executeResult($sql);
     if (!empty($result)) {
         $res = [
             "status" => 1,
             "msg" => "success!!!",
-            "categoryList" => $result,
+            "commentList" => $result,
         ];
     } else {
         $res = [
             "status" => 2,
             "msg" => "failure!!!",
-            "categoryList" => [],
+            "commentList" => [],
         ];
     }
     echo json_encode($res);
@@ -46,9 +47,10 @@ function addComment()
 {
     if (!empty($_POST)) {
         $userId = getPost("user_id");
+        $productID = getPost("product_id");
         $content = getPost("content");
 
-        $sql = "insert into comment(user_id, content) values ('$userId', '$content')";
+        $sql = "insert into comment(user_id, product_id, content) values ('$userId','$productID', '$content')";
         execute($sql);
 
         $res = [

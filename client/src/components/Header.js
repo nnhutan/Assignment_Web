@@ -78,15 +78,20 @@ function Header({ currPage }) {
               </div>
               <div className="d-flex justify-content-between">
                 <form className="d-flex">
-                  <input
-                    className="form-control me-2"
-                    type="search"
-                    placeholder="Search"
-                    aria-label="Search"
-                  />
-                  <button className="btn btn-outline-success" type="submit">
-                    Search
-                  </button>
+                  <div className="input-group">
+                    <input
+                      className="form-control bg-white border-0 rounded-pill rounded-end shadow-none"
+                      type="search"
+                      placeholder="Search"
+                      aria-label="Search"
+                    />
+                    <button
+                      className="input-group-text bg-white border-0 rounded-pill rounded-start"
+                      type="submit"
+                    >
+                      <i className="bi bi-search"></i>
+                    </button>
+                  </div>
                 </form>
                 <Link to="/cart">
                   <button className="btn btn-outline-primary rounded-circle position-relative ms-4">

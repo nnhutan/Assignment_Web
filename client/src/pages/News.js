@@ -7,7 +7,6 @@ import NewProducts from "../components/NewProducts";
 function News() {
   return (
     <div className="news-page">
-      <TopHeader />
       <Header currPage="news" />
       <h1 className="text-center">News Page</h1>
     </div>

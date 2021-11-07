@@ -276,9 +276,17 @@ function editUser()
                 $sql = "update User set fullname = '$fullname', email = '$email', phone_number = '$phone_number', address = '$address', updated_at = '$updated_at', role_id = $role_id where id = $id";
             }
             execute($sql);
+
+            if(isset($_SESSION['user'])){
+                if($_SESSION['user']['id']==$id) {
+                    $_SESSION['user'] = executeResult("select * from User where id = '$id'", true);
+                }
+            }
+
             $res = [
                 "status" => 1,
                 "msg" => "Edit success!!!",
+                "sql" => $sql
             ];
         }
     }

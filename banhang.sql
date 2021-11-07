@@ -16,11 +16,11 @@ CREATE TABLE `User` (
 );
 
 CREATE TABLE `Tokens` (
-	`user_id` int REFERENCES User (id),
-	`token` varchar(32) NOT NULL,
-	`created_at` datetime,
-	PRIMARY KEY (user_id, token)
-)
+  `user_id` int,
+  `token` varchar(32) NOT NULL,
+  `created_at` datetime,
+  PRIMARY KEY (`user_id`, `token`)
+);
 
 CREATE TABLE `Category` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
@@ -67,6 +67,7 @@ CREATE TABLE `Order_Detail` (
 CREATE TABLE `Comment` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `user_id` int,
+  `product_id` int,
   `content` varchar(255),
   `created_at` datetime,
   `updated_at` datetime
@@ -83,7 +84,7 @@ CREATE TABLE `Contact_Public` (
 CREATE TABLE `News` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `title` varchar(255),
-  `content` varchar(255),
+  `content` longtext,
   `thumbnail` varchar(255),
   `created_at` datetime,
   `updated_at` datetime
@@ -100,3 +101,8 @@ ALTER TABLE `Order_Detail` ADD FOREIGN KEY (`order_id`) REFERENCES `Oders` (`id`
 ALTER TABLE `Oders` ADD FOREIGN KEY (`user_id`) REFERENCES `User` (`id`);
 
 ALTER TABLE `Comment` ADD FOREIGN KEY (`user_id`) REFERENCES `User` (`id`);
+
+ALTER TABLE `Tokens` ADD FOREIGN KEY (`user_id`) REFERENCES `User` (`id`);
+
+ALTER TABLE `Comment` ADD FOREIGN KEY (`product_id`) REFERENCES `Product` (`id`);
+

@@ -7,7 +7,6 @@ import NewProducts from "../components/NewProducts";
 function Contact() {
   return (
     <div className="contact-page">
-      <TopHeader />
       <Header currPage="contact" />
       <h1 className="text-center">Contact Page</h1>
     </div>

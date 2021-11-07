@@ -7,7 +7,6 @@ import NewProducts from "../components/NewProducts";
 function Home() {
   return (
     <div className="home-page">
-      <TopHeader />
       <Header currPage="home" />
       <Slider />
       <TopSellingPoducts />

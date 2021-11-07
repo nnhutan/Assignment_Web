@@ -4,7 +4,6 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link,
   Redirect,
 } from "react-router-dom";
 import axios from "axios";
@@ -15,6 +14,8 @@ import Order from "./Order";
 import Product from "./Product";
 import User from "./User";
 import App from "../../App";
+import Contact from "./Contact";
+import News from "./News";
 
 function Admin() {
   const [state, setState] = useState({
@@ -23,23 +24,20 @@ function Admin() {
     user: {},
   });
   useEffect(() => {
-    async function authen() {
-      axios
-        .post(
-          API + `authentication.php`,
-          {
-            action: "login",
-          },
-          { withCredentials: true }
-        )
-        .then((res) => {
-          if (res.data.status === 1)
-            setState({ isLoggedIn: true, user: res.data.user });
-          else setState({ isLoggedIn: false, user: {} });
-          // window.location.href = "/admin";
-        });
-    }
-    authen();
+    axios
+      .post(
+        API + `authentication.php`,
+        {
+          action: "login",
+        },
+        { withCredentials: true }
+      )
+      .then((res) => {
+        if (res.data.status === 1)
+          setState({ isLoggedIn: true, user: res.data.user });
+        else setState({ isLoggedIn: false, user: {} });
+        // window.location.href = "/admin";
+      });
   }, []);
 
   const clickHandler = () => {
@@ -76,6 +74,12 @@ function Admin() {
           </Route>
           <Route path="/admin/user">
             <User clickHandler={clickHandler} currUser={state.user} />
+          </Route>
+          <Route path="/admin/contact">
+            <Contact clickHandler={clickHandler} currUser={state.user} />
+          </Route>
+          <Route path="/admin/news">
+            <News clickHandler={clickHandler} currUser={state.user} />
           </Route>
           <Route path="/admin">
             <Home clickHandler={clickHandler} currUser={state.user} />
