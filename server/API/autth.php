@@ -1,6 +1,6 @@
 <?php
 	require_once '../database/dbhelper.php';
-	require_once '../utils/utility.php';
+	require '../utils/api_ulti.php';
 	require '../utils/rest_api.php';
 
 	class auth extends rest_api{
