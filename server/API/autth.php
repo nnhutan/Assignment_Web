@@ -317,3 +317,4 @@
 	}
 
 }
+$new_auth= new auth();
