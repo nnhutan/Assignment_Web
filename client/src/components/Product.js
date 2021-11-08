@@ -8,17 +8,17 @@ const style = {
 function Product({ product }) {
   const { name, price, thumbnail } = product;
   return (
-    <div role="button" className="card" style={style}>
+    <div role="button" className="card" style={{}}>
       <img
         src={thumbnail}
         className="card-img-top"
         alt="..."
-        style={{ width: "100%", maxHeight: "271px" }}
+        style={{ width: "90%", maxHeight: "271px", margin:"auto", marginTop:"5%" }}
       />
-      <div className="card-body">
+      <div className="card-body text-center">
         <h5 className="card-title">{name}</h5>
-        <p className="card-text">${price}</p>
-        <Link to="/checkout" className="btn btn-primary">
+        <p className="card-text" style={{fontWeight:"bold",fontSize:"20px"}}>${price}</p>
+        <Link to="/checkout" className="btn btn-outline-primary btn-lg">
           Buy now
         </Link>
       </div>
