@@ -131,7 +131,7 @@ function Cart() {
             </div>
           </div>
           <hr />
-          <div className="cart-body">
+          <div className="body">
             <div className="row">
               <div className="col-md-12 order-2 order-lg-1 col-lg-5 col-xl-6">
                 <div className="order-note">

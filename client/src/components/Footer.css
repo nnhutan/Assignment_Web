@@ -1,23 +1,24 @@
-.text-small {
+.footer .text-small {
   font-size: 0.9rem;
 }
 
-a {
+.footet a {
   color: inherit;
   text-decoration: none;
   transition: all 0.3s;
 }
 
-a:hover, a:focus {
+.footer a:hover,
+.footer a:focus {
   text-decoration: none;
 }
 
-.form-control {
+.footer .form-control {
   background: #ffffff;
   border-color: #ffffff;
 }
 
-.form-control:focus {
+.footer .form-control:focus {
   background: #c2c2c2;
 }
 
