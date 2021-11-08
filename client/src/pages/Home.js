@@ -3,7 +3,7 @@ import Slider from "../components/Slider";
 import TopHeader from "../components/TopHeader";
 import TopSellingPoducts from "../components/TopSellingPoducts";
 import NewProducts from "../components/NewProducts";
-
+import Footer from "../components/Footer";
 function Home() {
   return (
     <div className="home-page">
@@ -11,6 +11,7 @@ function Home() {
       <Slider />
       <TopSellingPoducts />
       <NewProducts />
+      <Footer />
     </div>
   );
 }
