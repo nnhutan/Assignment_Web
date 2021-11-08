@@ -2,8 +2,11 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import API from "../../API/api";
 import Header from "../../components/admin/Header";
+import Pagination from "../../components/Pagination";
+import TableProduct from "../../components/admin/TableProduct";
 
 function Product({ clickHandler, currUser }) {
+  const [currentPage, setCurrentPage] = useState(1);
   const [categories, setCategories] = useState([]);
   const [status, setStatus] = useState({
     id: "",
@@ -21,7 +24,6 @@ function Product({ clickHandler, currUser }) {
 
   const getData = () => {
     axios.post(API + "product.php", { action: "list" }).then((response) => {
-      console.log(response.data);
       if (response.data.status === 1) setProducts(response.data.productList);
       else alert(response.data.msg);
     });
@@ -30,7 +32,6 @@ function Product({ clickHandler, currUser }) {
   useEffect(() => {
     getData();
     axios.post(API + "category.php", { action: "list" }).then((response) => {
-      console.log(response.data);
       if (response.data.status === 1) setCategories(response.data.categoryList);
     });
   }, []);
@@ -79,7 +80,6 @@ function Product({ clickHandler, currUser }) {
           ...product,
         })
         .then((response) => {
-          console.log(response.data);
           if (response.data.status === 2) alert(response.data.msg);
           else {
             setProducts((prev) => {
@@ -112,7 +112,7 @@ function Product({ clickHandler, currUser }) {
       axios
         .post(API + "product.php", { action: "delete", id: id })
         .then((response) => {
-          if (response.data.status === 2) alert(response.data.msg);
+          if (response.data.status !== 1) alert(response.data.msg);
           else setProducts((prev) => prev.filter((item) => item.id !== id));
         });
     }
@@ -126,6 +126,12 @@ function Product({ clickHandler, currUser }) {
     setProduct(product);
     document.querySelector(".openmodal").click();
   };
+
+  const productPerPage = 5;
+  const currProducts = products.slice(
+    (currentPage - 1) * productPerPage,
+    currentPage * productPerPage
+  );
 
   return (
     <div className="container-fluid p-0">
@@ -266,54 +272,17 @@ function Product({ clickHandler, currUser }) {
               </div>
             </div>
           </div>
-          <table className="table table-responsive table-hover">
-            <thead>
-              <tr>
-                <th>STT</th>
-                <th>Tên</th>
-                <th>Hình ảnh</th>
-                <th>Giá</th>
-                <th>Danh mục</th>
-                <th style={{ width: "80px" }}></th>
-                <th style={{ width: "80px" }}></th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((item, index) => {
-                return (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{item.title}</td>
-                    <td>
-                      <img
-                        src={item.thumbnail}
-                        alt="image"
-                        style={{ width: "68px" }}
-                      />
-                    </td>
-                    <td>{item.price}</td>
-                    <td>{item.category_name}</td>
-                    <td>
-                      <button
-                        className="btn btn-warning"
-                        onClick={() => editHandler(item.id, item)}
-                      >
-                        Sửa
-                      </button>
-                    </td>
-                    <td>
-                      <button
-                        className="btn btn-danger"
-                        onClick={() => deleteHandler(item.id)}
-                      >
-                        Xóa
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <TableProduct
+            products={currProducts}
+            editHandler={editHandler}
+            deleteHandler={deleteHandler}
+            offset={(currentPage - 1) * productPerPage}
+          />
+          <Pagination
+            numberPage={Math.ceil(products.length / productPerPage)}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
         </div>
       </div>
     </div>
