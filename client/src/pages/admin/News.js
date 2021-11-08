@@ -4,6 +4,8 @@ import API from "../../API/api";
 import Header from "../../components/admin/Header";
 import SunEditor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
+import TableNews from "../../components/admin/TableNews";
+import Pagination from "../../components/Pagination";
 
 function News({ clickHandler, currUser }) {
   const [status, setStatus] = useState({
@@ -93,6 +95,15 @@ function News({ clickHandler, currUser }) {
   const seeDetail = (id) => {
     setNews(newsList.find((item) => item.id === id));
   };
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemPerPage = 5;
+  const offset = (currentPage - 1) * itemPerPage;
+  const numberPage = Math.ceil(newsList.length / itemPerPage);
+  const currDisplay = newsList.slice(
+    (currentPage - 1) * itemPerPage,
+    currentPage * itemPerPage
+  );
 
   return (
     <div className="container-fluid p-0">
@@ -220,61 +231,20 @@ function News({ clickHandler, currUser }) {
               </div>
             </div>
           </div>
-          <table className="table table-responsive table-hover">
-            <thead>
-              <tr>
-                <th>STT</th>
-                <th>Tiêu đề</th>
-                <th>Hình ảnh</th>
-                <th>Nội dung</th>
-                <th style={{ width: "80px" }}></th>
-                <th style={{ width: "80px" }}></th>
-              </tr>
-            </thead>
-            <tbody>
-              {newsList.map((item, index) => {
-                return (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{item.title}</td>
-                    <td>
-                      <img
-                        src={item.thumbnail}
-                        alt="image"
-                        style={{ maxWidth: "60px" }}
-                      />
-                    </td>
-                    <td>
-                      <button
-                        className="btn btn-success seeDetail"
-                        onClick={() => seeDetail(item.id)}
-                        data-bs-toggle="modal"
-                        data-bs-target="#exampleModal"
-                      >
-                        Xem chi tiết
-                      </button>
-                    </td>
-                    <td>
-                      <button
-                        className="btn btn-warning"
-                        onClick={() => editHandler(item.id, item)}
-                      >
-                        Sửa
-                      </button>
-                    </td>
-                    <td>
-                      <button
-                        className="btn btn-danger"
-                        onClick={() => deleteHandler(item.id)}
-                      >
-                        Xóa
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <TableNews
+            newsList={currDisplay}
+            editHandler={editHandler}
+            deleteHandler={deleteHandler}
+            seeDetail={seeDetail}
+            offset={offset}
+          />
+          {numberPage > 1 ? (
+            <Pagination
+              numberPage={numberPage}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+            />
+          ) : null}
           <div
             className="modal fade"
             id="exampleModal"

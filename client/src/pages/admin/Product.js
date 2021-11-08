@@ -23,10 +23,12 @@ function Product({ clickHandler, currUser }) {
   const [products, setProducts] = useState([]);
 
   const getData = () => {
-    axios.post(API + "product.php", { action: "list" }).then((response) => {
-      if (response.data.status === 1) setProducts(response.data.productList);
-      else alert(response.data.msg);
-    });
+    return axios
+      .post(API + "product.php", { action: "list" })
+      .then((response) => {
+        if (response.data.status === 1) setProducts(response.data.productList);
+        else alert(response.data.msg);
+      });
   };
 
   useEffect(() => {
@@ -128,6 +130,7 @@ function Product({ clickHandler, currUser }) {
   };
 
   const productPerPage = 5;
+  const numberPage = Math.ceil(products.length / productPerPage);
   const currProducts = products.slice(
     (currentPage - 1) * productPerPage,
     currentPage * productPerPage
@@ -272,17 +275,23 @@ function Product({ clickHandler, currUser }) {
               </div>
             </div>
           </div>
+
           <TableProduct
             products={currProducts}
             editHandler={editHandler}
             deleteHandler={deleteHandler}
             offset={(currentPage - 1) * productPerPage}
           />
-          <Pagination
-            numberPage={Math.ceil(products.length / productPerPage)}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-          />
+
+          {numberPage > 1 ? (
+            <Pagination
+              numberPage={numberPage}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+            />
+          ) : (
+            <></>
+          )}
         </div>
       </div>
     </div>

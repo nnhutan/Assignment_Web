@@ -2,8 +2,11 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import API from "../../API/api";
 import Header from "../../components/admin/Header";
+import TableUser from "../../components/admin/TableUser";
+import Pagination from "../../components/Pagination";
 
 function User({ clickHandler, currUser }) {
+  const [currentPage, setCurrentPage] = useState(1);
   const [roles, setRoles] = useState([]);
   const [status, setStatus] = useState({
     id: "",
@@ -27,7 +30,6 @@ function User({ clickHandler, currUser }) {
         { withCredentials: true }
       )
       .then((response) => {
-        console.log(response.data);
         if (response.data.status === 1) setUsers(response.data.userList);
         else alert(response.data.msg);
       });
@@ -42,7 +44,6 @@ function User({ clickHandler, currUser }) {
         { withCredentials: true }
       )
       .then((response) => {
-        console.log(response.data);
         if (response.data.status === 1) setRoles(response.data.roleList);
       });
   }, []);
@@ -99,7 +100,6 @@ function User({ clickHandler, currUser }) {
           { withCredentials: true }
         )
         .then((response) => {
-          console.log(response.data);
           if (response.data.status !== 1) alert(response.data.msg);
           else {
             setUsers((prev) => {
@@ -150,6 +150,13 @@ function User({ clickHandler, currUser }) {
     setUser({ ...user, password: "" });
     document.querySelector(".openmodal").click();
   };
+
+  const itemPerPage = 5;
+  const numberPage = Math.ceil(users.length / itemPerPage);
+  const currUsers = users.slice(
+    (currentPage - 1) * itemPerPage,
+    currentPage * itemPerPage
+  );
 
   return (
     <div className="container-fluid p-0">
@@ -298,54 +305,20 @@ function User({ clickHandler, currUser }) {
               </div>
             </div>
           </div>
-          <table className="table table-responsive table-hover">
-            <thead>
-              <tr>
-                <th>STT</th>
-                <th>Họ Tên</th>
-                <th>Email</th>
-                <th>SĐT</th>
-                <th>Địa chỉ</th>
-                <th>Quyền</th>
-                <th style={{ width: "80px" }}></th>
-                <th style={{ width: "80px" }}></th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((item, index) => {
-                return (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{item.fullname}</td>
-                    <td>{item.email}</td>
-                    <td>{item.phone_number}</td>
-                    <td>{item.address}</td>
-                    <td>{item.role_name}</td>
-                    <td>
-                      <button
-                        className="btn btn-warning"
-                        onClick={() => editHandler(item.id, item)}
-                      >
-                        Sửa
-                      </button>
-                    </td>
-                    <td>
-                      <button
-                        className={
-                          item.id === currUser.id
-                            ? "btn btn-danger disabled"
-                            : "btn btn-danger"
-                        }
-                        onClick={() => deleteHandler(item.id)}
-                      >
-                        Xóa
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <TableUser
+            users={currUsers}
+            editHandler={editHandler}
+            deleteHandler={deleteHandler}
+            currUser={currUser}
+            offset={(currentPage - 1) * itemPerPage}
+          />
+          {numberPage > 1 ? (
+            <Pagination
+              numberPage={numberPage}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+            />
+          ) : null}
         </div>
       </div>
     </div>

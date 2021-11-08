@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import API from "../../API/api";
 import Header from "../../components/admin/Header";
+import TableCustomerContact from "../../components/admin/TableCustomerContact";
+import Pagination from "../../components/Pagination";
 
 function Contact({ clickHandler, currUser }) {
   const [status, setStatus] = useState({
@@ -96,6 +98,15 @@ function Contact({ clickHandler, currUser }) {
     setContact(contact);
     document.querySelector(".openmodal").click();
   };
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemPerPage = 5;
+  const offset = (currentPage - 1) * itemPerPage;
+  const numberPage = Math.ceil(customerContact.length / itemPerPage);
+  const currDisplay = customerContact.slice(
+    (currentPage - 1) * itemPerPage,
+    currentPage * itemPerPage
+  );
 
   return (
     <div className="container-fluid p-0">
@@ -245,39 +256,18 @@ function Contact({ clickHandler, currUser }) {
           Quản lý các thông tin liên hệ của khách hàng
         </h2>
         <div className="container">
-          <table className="table table-responsive table-hover">
-            <thead>
-              <tr>
-                <th>STT</th>
-                <th>Họ</th>
-                <th>Tên</th>
-                <th>Email</th>
-                <th>Số điện thoại</th>
-                <th style={{ width: "80px" }}></th>
-              </tr>
-            </thead>
-            <tbody>
-              {customerContact.map((item, index) => {
-                return (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{item.lastname}</td>
-                    <td>{item.firstname}</td>
-                    <td>{item.email}</td>
-                    <td>{item.phone_number}</td>
-                    <td>
-                      <button
-                        className="btn btn-danger"
-                        onClick={() => deleteHandler(item.id)}
-                      >
-                        Xóa
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <TableCustomerContact
+            customerContact={currDisplay}
+            deleteHandler={deleteHandler}
+            offset={offset}
+          />
+          {numberPage > 1 ? (
+            <Pagination
+              numberPage={numberPage}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+            />
+          ) : null}
         </div>
       </div>
     </div>

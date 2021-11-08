@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import API from "../../API/api";
 import Header from "../../components/admin/Header";
+import TableComment from "../../components/admin/TableComment";
+import Pagination from "../../components/Pagination";
 
 function Feedback({ clickHandler, currUser }) {
   const [comments, setComments] = useState([]);
@@ -28,6 +30,15 @@ function Feedback({ clickHandler, currUser }) {
       });
   };
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemPerPage = 5;
+  const offset = (currentPage - 1) * itemPerPage;
+  const numberPage = Math.ceil(comments.length / itemPerPage);
+  const currComments = comments.slice(
+    (currentPage - 1) * itemPerPage,
+    currentPage * itemPerPage
+  );
+
   return (
     <div className="container-fluid p-0">
       <Header
@@ -38,37 +49,18 @@ function Feedback({ clickHandler, currUser }) {
       <div className="container">
         <h2 className="text-center my-4">Quản lý phản hồi, bình luận</h2>
 
-        <table className="table table-hover table-responsive">
-          <thead>
-            <tr>
-              <th>STT</th>
-              <th>Thành viên</th>
-              <th>Sản phẩm</th>
-              <th>Nội dung</th>
-              <th>Ngày đăng</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {comments.map((item, index) => (
-              <tr key={item.id}>
-                <td>{index + 1}</td>
-                <td>{item.fullname}</td>
-                <td>{item.title}</td>
-                <td>{item.content}</td>
-                <td>{item.created_at}</td>
-                <td>
-                  <button
-                    className="btn btn-danger"
-                    onClick={() => deleteHandler(item.id)}
-                  >
-                    Xóa
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <TableComment
+          comments={currComments}
+          deleteHandler={deleteHandler}
+          offset={offset}
+        />
+        {numberPage > 1 ? (
+          <Pagination
+            numberPage={numberPage}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
+        ) : null}
       </div>
     </div>
   );

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import API from "../../API/api";
 import Header from "../../components/admin/Header";
+import TableCategory from "../../components/admin/TableCategory";
+import Pagination from "../../components/Pagination";
 
 function Category({ clickHandler, currUser }) {
   const [status, setStatus] = useState({
@@ -87,6 +89,14 @@ function Category({ clickHandler, currUser }) {
     document.querySelector(".openmodal").click();
   };
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemPerPage = 2;
+  const numberPage = Math.ceil(categories.length / itemPerPage);
+  const currCategories = categories.slice(
+    (currentPage - 1) * itemPerPage,
+    currentPage * itemPerPage
+  );
+
   return (
     <div className="container-fluid p-0">
       <Header
@@ -170,42 +180,19 @@ function Category({ clickHandler, currUser }) {
               </div>
             </div>
           </div>
-          <table className="table table-responsive table-hover">
-            <thead>
-              <tr>
-                <th>STT</th>
-                <th>Tên</th>
-                <th style={{ width: "80px" }}></th>
-                <th style={{ width: "80px" }}></th>
-              </tr>
-            </thead>
-            <tbody>
-              {categories.map((item, index) => {
-                return (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{item.name}</td>
-                    <td>
-                      <button
-                        className="btn btn-warning"
-                        onClick={() => editHandler(item.id, item.name)}
-                      >
-                        Sửa
-                      </button>
-                    </td>
-                    <td>
-                      <button
-                        className="btn btn-danger"
-                        onClick={() => deleteHandler(item.id)}
-                      >
-                        Xóa
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <TableCategory
+            categories={currCategories}
+            editHandler={editHandler}
+            deleteHandler={deleteHandler}
+            offset={(currentPage - 1) * itemPerPage}
+          />
+          {numberPage > 1 ? (
+            <Pagination
+              numberPage={numberPage}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+            />
+          ) : null}
         </div>
       </div>
     </div>
