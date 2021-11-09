@@ -7,16 +7,20 @@ function TopHeader() {
   const clickHandler = () => {
     axios
       .post(
-        API + `authentication.php`,
+        //API + `authentication.php`,
+        API+'autth.php/logout',
         {
           action: "logout",
         },
         { withCredentials: true }
       )
       .then((res) => {
-        console.log(res.data);
-        if (res.data.status === 1) setState({ isLoggedIn: false, user: {} });
+        alert(res.data);
+        //if (res.data.status === 1)
+          setState({ isLoggedIn: false, user: {} });
         // window.location.href = "/admin";
+      }).catch(res => {
+        alert(res)
       });
   };
   const [state, setState] = useState({
@@ -28,18 +32,24 @@ function TopHeader() {
     async function authen() {
       axios
         .post(
-          API + `authentication.php`,
+          //API + `authentication.php`,
+          API+'autth.php/login',
           {
             action: "login",
           },
           { withCredentials: true }
         )
         .then((res) => {
-          if (res.data.status === 1)
-            setState({ isLoggedIn: true, user: res.data.user });
+          //if (res.data.status === 1)
+          setState({ isLoggedIn: true, user: res.data });
+          console.log(res.data)
+        }).catch(res => {
+          console.log(res)
         });
       axios
-        .post(API + `contact-public.php`, {
+        .post(
+          API + `contact-public.php`,
+          {
           action: "list",
         })
         .then((res) => {
