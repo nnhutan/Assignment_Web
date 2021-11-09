@@ -6,7 +6,7 @@ function Pagination({ numberPage, currentPage, setCurrentPage }) {
       <ul className="pagination justify-content-center">
         {currentPage === 1 ? (
           <li className="page-item disabled">
-            <button role="button" className="page-link shadow-none" href="#">
+            <button className="page-link shadow-none" href="#">
               Previous
             </button>
           </li>
@@ -15,7 +15,7 @@ function Pagination({ numberPage, currentPage, setCurrentPage }) {
             className="page-item"
             onClick={() => setCurrentPage(currentPage - 1)}
           >
-            <button role="button" className="page-link shadow-none" href="#">
+            <button className="page-link shadow-none" href="#">
               Previous
             </button>
           </li>
@@ -24,7 +24,7 @@ function Pagination({ numberPage, currentPage, setCurrentPage }) {
           <></>
         ) : (
           <li className="page-item" onClick={() => setCurrentPage(1)}>
-            <button role="button" className="page-link shadow-none" href="#">
+            <button className="page-link shadow-none" href="#">
               1
             </button>
           </li>
@@ -34,7 +34,7 @@ function Pagination({ numberPage, currentPage, setCurrentPage }) {
             className="page-item"
             onClick={() => setCurrentPage(currentPage - 2)}
           >
-            <button role="button" className="page-link shadow-none" href="#">
+            <button className="page-link shadow-none" href="#">
               ...
             </button>
           </li>
@@ -48,13 +48,13 @@ function Pagination({ numberPage, currentPage, setCurrentPage }) {
             className="page-item"
             onClick={() => setCurrentPage(currentPage - 1)}
           >
-            <button role="button" className="page-link shadow-none" href="#">
+            <button className="page-link shadow-none" href="#">
               {currentPage - 1}
             </button>
           </li>
         )}
         <li className="page-item active">
-          <button role="button" className="page-link shadow-none " href="#">
+          <button className="page-link shadow-none " href="#">
             {currentPage}
           </button>
         </li>
@@ -65,7 +65,7 @@ function Pagination({ numberPage, currentPage, setCurrentPage }) {
             className="page-item"
             onClick={() => setCurrentPage(currentPage + 1)}
           >
-            <button role="button" className="page-link shadow-none" href="#">
+            <button className="page-link shadow-none" href="#">
               {currentPage + 1}
             </button>
           </li>
@@ -75,7 +75,7 @@ function Pagination({ numberPage, currentPage, setCurrentPage }) {
             className="page-item"
             onClick={() => setCurrentPage(currentPage + 2)}
           >
-            <button role="button" className="page-link shadow-none" href="#">
+            <button className="page-link shadow-none" href="#">
               ...
             </button>
           </li>
@@ -86,7 +86,7 @@ function Pagination({ numberPage, currentPage, setCurrentPage }) {
           <></>
         ) : (
           <li className="page-item " onClick={() => setCurrentPage(numberPage)}>
-            <button role="button" className="page-link shadow-none" href="#">
+            <button className="page-link shadow-none" href="#">
               {numberPage}
             </button>
           </li>
@@ -94,7 +94,7 @@ function Pagination({ numberPage, currentPage, setCurrentPage }) {
 
         {currentPage === numberPage ? (
           <li className="page-item disabled">
-            <button role="button" className="page-link shadow-none" href="#">
+            <button className="page-link shadow-none" href="#">
               Next
             </button>
           </li>
@@ -103,7 +103,7 @@ function Pagination({ numberPage, currentPage, setCurrentPage }) {
             className="page-item"
             onClick={() => setCurrentPage(currentPage + 1)}
           >
-            <button role="button" className="page-link shadow-none" href="#">
+            <button className="page-link shadow-none" href="#">
               Next
             </button>
           </li>

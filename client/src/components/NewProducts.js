@@ -4,7 +4,7 @@ import Product from "./Product";
 
 function TopSellingPoducts() {
   return (
-    <div className="top-selling bg-light mb-5">
+    <div className="top-selling bg-light pb-5">
       <h3 className="text-center py-4">Sản phẩm mới</h3>
       <div className="container">
         <div className="row g-2">

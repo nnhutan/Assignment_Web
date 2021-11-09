@@ -1,11 +1,16 @@
 <?php
 	require_once '../database/dbhelper.php';
-	require '../utils/rest_api.php';
+	require_once '../utils/utility.php';
+	require_once '../utils/rest_api.php';
+	header('Access-Control-Allow-Origin:  http://localhost:3000');
+	header("Access-Control-Allow-Headers: Content-Type");
+	header("Access-Control-Allow-Credentials: true");
 
 	class auth extends rest_api{
-		function __construct{
-			parent::__construct;
-		}
+		// function __construct()
+		// {
+		// 	parent::__construct;
+		// }
 		function getRole() {
 		$user = getUserToken();
 		if ($user == null) {

@@ -10,7 +10,10 @@
 	}
 	private function _input(){
 		session_start();
-		header('Access-Control-Allow-Origin: *');
+		header('Access-Control-Allow-Origin:  http://localhost:3000');
+header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Credentials: true");
+
 
 
 		$this->method=$_SERVER['REQUEST_METHOD'];

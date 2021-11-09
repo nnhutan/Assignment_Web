@@ -16,6 +16,7 @@ import {
   User,
 } from "./pages/index";
 import TopHeader from "./components/TopHeader";
+import TestAPI from "./TestAPI";
 
 function App() {
   return (
@@ -23,6 +24,9 @@ function App() {
       <Router>
         <div>
           <Switch>
+            <Route path="/test">
+              <TestAPI />
+            </Route>
             <Route path="/intro">
               <TopHeader />
               <Intro />
