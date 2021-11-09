@@ -115,6 +115,7 @@ function deleteProduct()
         $res = [
             "status" => 1,
             "msg" => "success!!!",
+        "sql" => $sql
         ];
     } else {
         $res = [
