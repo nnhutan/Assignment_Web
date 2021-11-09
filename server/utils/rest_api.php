@@ -8,7 +8,7 @@
 		$this->_input();
 		$this->_process_api();
 	}
-	private function _input(){
+	protected function _input(){
 		session_start();
 		header('Access-Control-Allow-Origin: *');
 
@@ -34,7 +34,7 @@
 				break;
 		}
 	}
-	private function _process_api(){
+	protected function _process_api(){
 		if(method_exists($this,$this->endpoint)){
 			$this->{$this->endpoint}();
 		}
@@ -47,7 +47,7 @@
 		echo json_encode($data,JSON_HEX_QUOT | JSON_HEX_TAG);
 		//echo json_encode($this->endpoint);
 	}	
-	private function _build_http_header_string($status_code){
+	protected function _build_http_header_string($status_code){
 		$status=array(
 			200=>'OK',
 			404=>'NOT FOUND',
@@ -58,7 +58,7 @@
 
 	}
 
-	private function fixSqlInject($sql)
+	protected function fixSqlInject($sql)
 	{
 		$sql = str_replace('\\', '\\\\', $sql);
 		$sql = str_replace('\'', '\\\'', $sql);
@@ -66,7 +66,7 @@
 	}
 
 // Lay du lieu tu bien $this->params
-	 private function getGet($key){
+	 protected function getGet($key){
 		$value = '';
 		if (isset($this->params[$key])) {
 			$value = $this->params[$key];
@@ -76,7 +76,7 @@
 	}
 
 	// Lay du lieu tu bien $this->params
-	private function getPost($key)
+	protected function getPost($key)
 	{
 		$value = '';
 		if (isset($this->params[$key])) {
@@ -87,7 +87,7 @@
 	}
 
 	// Lay du lieu tu bien $_REQUEST
-	private function getRequest($key)
+	protected function getRequest($key)
 	{
 		$value = '';
 		if (isset($_REQUEST[$key])) {
@@ -98,7 +98,7 @@
 	}
 
 	// Lay du lieu tu bien $_COOKIE
-	private function getCookie($key)
+	protected function getCookie($key)
 	{
 		$value = '';
 		if (isset($_COOKIE[$key])) {
@@ -109,15 +109,15 @@
 	}
 
 	// Ma hoa mat khau hai lop MD5
-	private function getSecurityMD5($pwd)
+	protected function getSecurityMD5($pwd)
 	{
-		return md5(md5($pwd) . PRIVATE_KEY);
+		return md5(md5($pwd) . protected_KEY);
 	}
 
 	// Khi dang nhap thanh cong -> setCookie(tokens) va luu thong tin user vao bien $_SESSION
 	// Ham nay giup lay thong tin user khi da dang nhap thanh cong
 	// Neu tra ve null -> not login
-	private function getUserToken()
+	protected function getUserToken()
 	{
 		if (isset($_SESSION['user'])) {
 			return $_SESSION['user'];

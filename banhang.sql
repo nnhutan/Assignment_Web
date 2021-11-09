@@ -1,3 +1,6 @@
+create database	web_assignment;
+use `web_assignment`;
+
 CREATE TABLE `Role` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `name` varchar(255)

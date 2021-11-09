@@ -1,12 +1,14 @@
 <?php
 	require_once '../database/dbhelper.php';
 	require '../utils/rest_api.php';
-
+	header('Access-Control-Allow-Origin:  *');
+	header("Access-Control-Allow-Headers: Content-Type");
+	//header("Access-Control-Allow-Credentials: true");
 	class auth extends rest_api{
-		function __construct{
+		public public function __construct(){
 			parent::__construct;
 		}
-		function getRole() {
+		protected function getRole() {
 		$user = getUserToken();
 		if ($user == null) {
 			$this->response(401,"Not login!!");
@@ -16,7 +18,7 @@
 		$result = executeResult($sql);
 		$this->response(200,$result);
 	}
-	function login(){
+	protected function login(){
 		$email = $pwd = '';
 		$user = getUserToken();
 		if ($user != null) {
@@ -50,7 +52,7 @@
 		}
 		return;
 	}
-	function logout(){
+	protected function logout(){
 		$user = getUserToken();
 		if ($user != null) {
 			$token = getCookie('token');
@@ -62,7 +64,7 @@
 		$this->response(200,"Logout successfully!");
 		session_destroy();
 	}
-	function register(){
+	protected function register(){
 		$fullname = $email = $phone = $address = '';
 		if (!empty($_POST)) {
 			$fullname = getPost('fullname');
@@ -100,7 +102,7 @@
 			$this->response(400,"Register failed");
 		}
 	}
-	function userList(){
+	protected function userList(){
 		$user = getUserToken();
 		if ($user == null) {
 			$this->response(401,"Not login");
@@ -110,7 +112,7 @@
 		$data = executeResult($sql);
 		$this->response(200,$data);
 	}
-	function deleteUser(){
+	protected function deleteUser(){
 		$user = getUserToken();
 		if ($user == null) {
 			$this->response(401,"Not login");
@@ -137,7 +139,7 @@
 		echo json_encode($res);
 	}
 
-	function editUser(){
+	protected function editUser(){
 		$user = getUserToken();
 		if ($user == null) {
 			$this->response(401,"Not login");
@@ -174,7 +176,7 @@
 		}
 	}
 
-	function addUser(){
+	protected function addUser(){
 		$user = getUserToken();
 		if ($user == null) {
 			$res = [

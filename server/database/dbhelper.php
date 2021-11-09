@@ -1,5 +1,6 @@
 <?php
-require_once 'config.php';
+//require_once 'config.php';
+require_once 'config2.php';
 
 // Thuc hien tat ca cac loai cau lenh sql
 function execute($sql)
