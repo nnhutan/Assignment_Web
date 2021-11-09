@@ -1,4 +1,5 @@
 <?php
+	//require '../database/config2.php';
 	class rest_api{
 	protected $method='';
 	protected $params=array();
@@ -10,8 +11,12 @@
 	}
 	protected function _input(){
 		session_start();
-		header('Access-Control-Allow-Origin: *');
-
+		header('Access-Control-Allow-Origin: http://localhost:3000  ');
+		//header("Access-Control-Allow-Headers: Content-Type");
+		header("Access-Control-Allow-Credentials: true");
+		header('Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS');
+		header("Access-Control-Request-Method: OPTIONS");
+		header('Access-Control-Allow-Headers: AccountKey,x-requested-with, Content-Type, origin, authorization, accept, client-security-token, host, date, cookie, cookie2');
 
 		$this->method=$_SERVER['REQUEST_METHOD'];
 		$this->params=explode('/',trim($_SERVER['PATH_INFO'],'/'));
@@ -28,6 +33,9 @@
 				break;
 			case 'DELETE':
 				$this->params=explode('/',trim($_SERVER['PATH_INFO'],'/'));
+				break;
+			case 'OPTIONS':
+				$this->response(200,"ok");
 				break;
 			default:
 				$this->response(500,"invalid Method");
@@ -81,7 +89,7 @@
 		$value = '';
 		if (isset($this->params[$key])) {
 			$value = $this->params[$key];
-			$value = fixSqlInject($value);
+			$value = $this ->fixSqlInject($value);
 		}
 		return trim($value);
 	}
@@ -111,7 +119,8 @@
 	// Ma hoa mat khau hai lop MD5
 	protected function getSecurityMD5($pwd)
 	{
-		return md5(md5($pwd) . protected_KEY);
+		return md5(md5($pwd));
+// . protected_KEY);
 	}
 
 	// Khi dang nhap thanh cong -> setCookie(tokens) va luu thong tin user vao bien $_SESSION
@@ -122,7 +131,7 @@
 		if (isset($_SESSION['user'])) {
 			return $_SESSION['user'];
 		}
-		$token = getCookie('token');
+		$token = $this->getCookie('token');
 		$sql = "select * from Tokens where token = '$token'";
 		$item = executeResult($sql, true);
 		if ($item != null) {
@@ -139,4 +148,4 @@
 	}
 
 }
-?>
+
