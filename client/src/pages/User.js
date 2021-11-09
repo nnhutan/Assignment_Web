@@ -29,17 +29,21 @@ function User() {
     console.log("axios");
     axios
       .post(
-        API + `authentication.php`,
+        //API + `authentication.php`,
+        API+'autth.php/login',
         {
           action: "login",
         },
         { withCredentials: true }
       )
       .then((res) => {
-        if (res.data.status === 1) {
-          setState({ isLoggedIn: true, user: res.data.user });
-          setUser({ ...res.data.user, password: "" });
-        }
+        //if (res.data.status === 1) {
+          console.log(res.data)
+          setState({ isLoggedIn: true, user: res.data });
+          setUser({ ...res.data, password: "" });
+        //}
+      }).catch(res => {
+        console.log(res)
       });
   }, []);
 
@@ -51,25 +55,29 @@ function User() {
   const clickHandler = () => {
     axios
       .post(
-        API + `authentication.php`,
+        //API + `authentication.php`,
+        API + 'autth.php/logout',
         {
           action: "logout",
         },
         { withCredentials: true }
       )
       .then((res) => {
-        console.log(res.data);
-        if (res.data.status === 1) {
+        alert(res.data);
+        //if (res.data.status === 1) {
           setState({ isLoggedIn: false, user: {} });
-        }
+        //}
         // window.location.href = "/admin";
+      }).catch(res => {
+        alert(res)
       });
   };
 
   const submitHandler = () => {
     axios
       .post(
-        API + `authentication.php`,
+        //API + `authentication.php`,
+        API+'autth.php/editUser',
         {
           action: "edit",
           ...user,
@@ -78,16 +86,20 @@ function User() {
       )
       .then((res) => {
         console.log(res.data);
-        if (res.data.status !== 1) {
-          alert(res.data.msg);
-        } else {
+        //if (res.data.status !== 1) {
+          //alert(res.data.msg);
+        //} else {
           setState((prev) => ({ ...prev, user: user }));
           setUser((prev) => ({ ...prev, password: "" }));
           document.getElementById("new-password").value = "";
           document.getElementById("old-password").value = "";
-        }
+        //}
         // console.log(user, state.user);
+      }).catch((res, status) => {
+        console.log(res,status)
       });
+
+    
   };
   const closeHandler = (x) => {
     switch (x) {

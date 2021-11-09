@@ -1,6 +1,6 @@
 create database	web_assignment;
 use `web_assignment`;
-
+drop database `web_assignment`;
 CREATE TABLE `Role` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `name` varchar(255)
@@ -101,11 +101,23 @@ ALTER TABLE `Order_Detail` ADD FOREIGN KEY (`product_id`) REFERENCES `Product` (
 
 ALTER TABLE `Order_Detail` ADD FOREIGN KEY (`order_id`) REFERENCES `Oders` (`id`);
 
-ALTER TABLE `Oders` ADD FOREIGN KEY (`user_id`) REFERENCES `User` (`id`);
+ALTER TABLE `Oders` ADD FOREIGN KEY (`user_id`) REFERENCES `User` (`id`) on delete cascade;
 
 ALTER TABLE `Comment` ADD FOREIGN KEY (`user_id`) REFERENCES `User` (`id`);
 
 ALTER TABLE `Tokens` ADD FOREIGN KEY (`user_id`) REFERENCES `User` (`id`);
 
 ALTER TABLE `Comment` ADD FOREIGN KEY (`product_id`) REFERENCES `Product` (`id`) ON DELETE SET NULL;
+
+drop table `User`;
+drop table `Product`;
+drop table `Order_Detail`;
+drop table `Orders`;
+drop table `Comment`;
+drop table `Tokens`;
+drop table `category`;
+drop table `contact_public`;
+drop table `role`;
+drop table `news`;
+
 

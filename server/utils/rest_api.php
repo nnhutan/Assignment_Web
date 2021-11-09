@@ -36,9 +36,11 @@
 				break;
 			case 'OPTIONS':
 				$this->response(200,"ok");
+				die();
 				break;
 			default:
 				$this->response(500,"invalid Method");
+				die();
 				break;
 		}
 	}
@@ -111,7 +113,7 @@
 		$value = '';
 		if (isset($_COOKIE[$key])) {
 			$value = $_COOKIE[$key];
-			$value = fixSqlInject($value);
+			$value = $this->fixSqlInject($value);
 		}
 		return trim($value);
 	}

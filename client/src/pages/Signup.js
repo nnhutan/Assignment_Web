@@ -13,15 +13,19 @@ function Signup() {
   useEffect(() => {
     axios
       .post(
-        API + `authentication.php`,
+        //API + `authentication.php`,
+        API+'autth.php/login',
         {
           action: "login",
         },
         { withCredentials: true }
       )
       .then((res) => {
-        if (res.data.status === 1) setStatus(true);
+        //if (res.data.status === 1)
+          setStatus(true);
         // window.location.href = "/admin";
+      }).catch(res => {
+        console.log(res)
       });
   }, []);
 
@@ -38,16 +42,26 @@ function Signup() {
 
   const submitHandler = () => {
     axios
-      .post(API + `authentication.php`, {
+      .post(
+        //API + `authentication.php`,
+        API +'autth.php/register',
+        {
         action: "register",
         role_id: "1",
         ...user,
       })
       .then((res) => {
-        if (res.data.status === 1) window.location.href = "/login";
-        else alert(res.data.msg);
+        //if (res.data.status === 1)
+          alert(res.data)
+        window.location.href = "/login";
+        //else alert(res.data.msg);
+      }).catch(res => {
+        alert(res)
       });
+
+    
   };
+  
   if (status) return <Redirect to="/admin" />;
   return (
     <div
@@ -158,13 +172,13 @@ function Signup() {
                   Tôi đồng ý với các điều khoản và dịch vụ
                 </label>
               </div>
-              <button
+              <div
                 type="submit"
                 className="f btn btn-primary my-3 py-2 px-5"
                 onClick={submitHandler}
               >
                 Đăng ký
-              </button>
+              </div>
             </form>
             <Link to="/login">Tôi đã có tài khoản!</Link>
           </div>
