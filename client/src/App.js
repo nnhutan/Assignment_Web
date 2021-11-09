@@ -1,6 +1,6 @@
 import "./App.css";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-
+import { ContextList,ContextProvider } from "./Context";
 import {
   Home,
   Cart,
@@ -14,12 +14,14 @@ import {
   Signup,
   Admin,
   User,
+  Test as Test,
 } from "./pages/index";
 import TopHeader from "./components/TopHeader";
 import TestAPI from "./TestAPI";
 
 function App() {
   return (
+    <ContextProvider>
     <div className="App">
       <Router>
         <div>
@@ -70,11 +72,13 @@ function App() {
             <Route path="/">
               <TopHeader />
               <Home />
-            </Route>
+              </Route>
+              <Route exact path="/test" component={ Test}/>
           </Switch>
         </div>
       </Router>
-    </div>
+      </div>
+    </ContextProvider>
   );
 }
 

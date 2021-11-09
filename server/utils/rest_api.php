@@ -1,4 +1,5 @@
 <?php
+	//require '../database/config2.php';
 	class rest_api{
 	protected $method='';
 	protected $params=array();
@@ -8,12 +9,14 @@
 		$this->_input();
 		$this->_process_api();
 	}
-	private function _input(){
+	protected function _input(){
 		session_start();
-		header('Access-Control-Allow-Origin:  http://localhost:3000');
-header("Access-Control-Allow-Headers: Content-Type");
-header("Access-Control-Allow-Credentials: true");
-
+		header('Access-Control-Allow-Origin: http://localhost:3000  ');
+		//header("Access-Control-Allow-Headers: Content-Type");
+		header("Access-Control-Allow-Credentials: true");
+		header('Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS');
+		header("Access-Control-Request-Method: OPTIONS");
+		header('Access-Control-Allow-Headers: AccountKey,x-requested-with, Content-Type, origin, authorization, accept, client-security-token, host, date, cookie, cookie2');
 
 
 		$this->method=$_SERVER['REQUEST_METHOD'];
@@ -32,12 +35,17 @@ header("Access-Control-Allow-Credentials: true");
 			case 'DELETE':
 				$this->params=explode('/',trim($_SERVER['PATH_INFO'],'/'));
 				break;
+			case 'OPTIONS':
+				$this->response(200,"ok");
+				die();
+				break;
 			default:
 				$this->response(500,"invalid Method");
+				die();
 				break;
 		}
 	}
-	private function _process_api(){
+	protected function _process_api(){
 		if(method_exists($this,$this->endpoint)){
 			$this->{$this->endpoint}();
 		}
@@ -50,7 +58,7 @@ header("Access-Control-Allow-Credentials: true");
 		echo json_encode($data,JSON_HEX_QUOT | JSON_HEX_TAG);
 		//echo json_encode($this->endpoint);
 	}	
-	private function _build_http_header_string($status_code){
+	protected function _build_http_header_string($status_code){
 		$status=array(
 			200=>'OK',
 			404=>'NOT FOUND',
@@ -61,7 +69,7 @@ header("Access-Control-Allow-Credentials: true");
 
 	}
 
-	private function fixSqlInject($sql)
+	protected function fixSqlInject($sql)
 	{
 		$sql = str_replace('\\', '\\\\', $sql);
 		$sql = str_replace('\'', '\\\'', $sql);
@@ -69,7 +77,7 @@ header("Access-Control-Allow-Credentials: true");
 	}
 
 // Lay du lieu tu bien $this->params
-	 private function getGet($key){
+	 protected function getGet($key){
 		$value = '';
 		if (isset($this->params[$key])) {
 			$value = $this->params[$key];
@@ -79,18 +87,18 @@ header("Access-Control-Allow-Credentials: true");
 	}
 
 	// Lay du lieu tu bien $this->params
-	private function getPost($key)
+	protected function getPost($key)
 	{
 		$value = '';
 		if (isset($this->params[$key])) {
 			$value = $this->params[$key];
-			$value = fixSqlInject($value);
+			$value = $this ->fixSqlInject($value);
 		}
 		return trim($value);
 	}
 
 	// Lay du lieu tu bien $_REQUEST
-	private function getRequest($key)
+	protected function getRequest($key)
 	{
 		$value = '';
 		if (isset($_REQUEST[$key])) {
@@ -101,31 +109,32 @@ header("Access-Control-Allow-Credentials: true");
 	}
 
 	// Lay du lieu tu bien $_COOKIE
-	private function getCookie($key)
+	protected function getCookie($key)
 	{
 		$value = '';
 		if (isset($_COOKIE[$key])) {
 			$value = $_COOKIE[$key];
-			$value = fixSqlInject($value);
+			$value = $this->fixSqlInject($value);
 		}
 		return trim($value);
 	}
 
 	// Ma hoa mat khau hai lop MD5
-	private function getSecurityMD5($pwd)
+	protected function getSecurityMD5($pwd)
 	{
-		return md5(md5($pwd) . PRIVATE_KEY);
+		return md5(md5($pwd));
+// . protected_KEY);
 	}
 
 	// Khi dang nhap thanh cong -> setCookie(tokens) va luu thong tin user vao bien $_SESSION
 	// Ham nay giup lay thong tin user khi da dang nhap thanh cong
 	// Neu tra ve null -> not login
-	private function getUserToken()
+	protected function getUserToken()
 	{
 		if (isset($_SESSION['user'])) {
 			return $_SESSION['user'];
 		}
-		$token = getCookie('token');
+		$token = $this->getCookie('token');
 		$sql = "select * from Tokens where token = '$token'";
 		$item = executeResult($sql, true);
 		if ($item != null) {
@@ -142,4 +151,3 @@ header("Access-Control-Allow-Credentials: true");
 	}
 
 }
-?>

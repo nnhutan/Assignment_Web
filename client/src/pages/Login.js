@@ -13,7 +13,8 @@ function Login() {
   useEffect(() => {
     axios
       .post(
-        API + `authentication.php`,
+        //API + `authentication.php`,
+        API+'autth.php/login',
         {
           action: "login",
         },
@@ -21,8 +22,11 @@ function Login() {
       )
       .then((res) => {
         console.log(res.data);
-        if (res.data.status === 1) setStatus(true);
+        //if (res.data.status === 1)
+          setStatus(true);
         // window.location.href = "/admin";
+      }).catch(res => {
+        console.log(res)
       });
   }, []);
   const [user, setUser] = useState({
@@ -39,7 +43,8 @@ function Login() {
     e.preventDefault();
     axios
       .post(
-        API + `authentication.php`,
+        //API + `authentication.php`,
+        API+'autth.php/login',
         {
           action: "login",
           ...user,
@@ -48,9 +53,12 @@ function Login() {
       )
       .then((res) => {
         console.log(res.data);
-        if (res.data.status === 1) setStatus(true);
-        // window.location.href = "/admin";
-        else alert(res.data.msg);
+        //if (res.data.status === 1) setStatus(true);
+         window.location.href = "/admin";
+        //else alert(res.data.msg);
+      }).catch((res,status) => {
+        alert(res,status)
+        
       });
   };
   if (status) return <Redirect to="/admin" />;
