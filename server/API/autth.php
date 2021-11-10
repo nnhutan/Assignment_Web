@@ -9,6 +9,7 @@
 		
 		protected function getRole() {
 		$user = $this->getUserToken();
+
 		if ($user == null) {
 			$this->response(404,"Not login!!");
 			return;

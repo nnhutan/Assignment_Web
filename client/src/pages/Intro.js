@@ -3,12 +3,14 @@ import Slider from "../components/Slider";
 import TopHeader from "../components/TopHeader";
 import TopSellingPoducts from "../components/TopSellingPoducts";
 import NewProducts from "../components/NewProducts";
-
+import IntroPage from "../components/IntroPage";
+import Footer from "../components/Footer";
 function Intro() {
   return (
     <div className="intro-page">
       <Header currPage="intro" />
-      <h1 className="text-center">Intro page</h1>
+      <IntroPage />
+      <Footer />
     </div>
   );
 }

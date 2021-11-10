@@ -18,6 +18,7 @@
 		header("Access-Control-Request-Method: OPTIONS");
 		header('Access-Control-Allow-Headers: AccountKey,x-requested-with, Content-Type, origin, authorization, accept, client-security-token, host, date, cookie, cookie2');
 
+
 		$this->method=$_SERVER['REQUEST_METHOD'];
 		$this->params=explode('/',trim($_SERVER['PATH_INFO'],'/'));
 		$this->endpoint=array_shift($this->params);
