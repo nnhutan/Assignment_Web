@@ -25,26 +25,34 @@ function User({ clickHandler, currUser }) {
   const getData = () => {
     axios
       .post(
-        API + "authentication.php",
+        //API + "authentication.php",
+        API +'autth.php/userList',
         { action: "list" },
         { withCredentials: true }
       )
       .then((response) => {
-        if (response.data.status === 1) setUsers(response.data.userList);
-        else alert(response.data.msg);
-      });
+        //if (response.data.status === 1) 
+        setUsers(response.data);
+        //else alert(response.data.msg);
+      }).catch(res => {
+        alert(res)
+      })
   };
 
   useEffect(() => {
     getData();
     axios
       .post(
-        API + "authentication.php",
+        //API + "authentication.php",
+        API+'autth.php/getRole',
         { action: "role" },
         { withCredentials: true }
       )
       .then((response) => {
-        if (response.data.status === 1) setRoles(response.data.roleList);
+        //if (response.data.status === 1) 
+        setRoles(response.data);
+      }).catch(res => {
+        alert(res)
       });
   }, []);
 
@@ -91,7 +99,8 @@ function User({ clickHandler, currUser }) {
     } else {
       axios
         .post(
-          API + "authentication.php",
+          //API + "authentication.php",
+          API +'autth.php/editUser',
           {
             action: "edit",
             id: status.id,
@@ -100,14 +109,14 @@ function User({ clickHandler, currUser }) {
           { withCredentials: true }
         )
         .then((response) => {
-          if (response.data.status !== 1) alert(response.data.msg);
-          else {
+          //if (response.data.status !== 1) alert(response.data.msg);
+          //else {
             setUsers((prev) => {
               const idx = prev.findIndex((item) => item.id === status.id);
               prev[idx] = { ...prev[idx], ...user };
               return prev;
             });
-          }
+          //}
           setUser({
             fullname: "",
             role_id: "",
@@ -120,6 +129,8 @@ function User({ clickHandler, currUser }) {
             id: "",
             action: "Thêm",
           });
+        }).catch(res => {
+          alert(res)
         });
     }
   };
@@ -131,13 +142,17 @@ function User({ clickHandler, currUser }) {
     if (option) {
       axios
         .post(
-          API + "authentication.php",
+          //API + "authentication.php",
+          API+'autth.php/deleteUser',
           { action: "delete", id: id },
           { withCredentials: true }
         )
         .then((response) => {
-          if (response.data.status === 2) alert(response.data.msg);
-          else setUsers((prev) => prev.filter((item) => item.id !== id));
+          //if (response.data.status === 2) alert(response.data.msg);
+          //else
+          setUsers((prev) => prev.filter((item) => item.id !== id));
+        }).catch(res => {
+          alert(res)
         });
     }
   };

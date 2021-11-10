@@ -16,17 +16,28 @@ function Contact({ clickHandler, currUser }) {
 
   const getData = () => {
     axios
-      .post(API + "contact-public.php", { action: "list" })
+      .post(
+        //API + "contact-public.php",
+        API+'cont.php/listContact',
+        { action: "list" })
       .then((response) => {
         if (response.data.status === 1) setContacts(response.data.contactList);
         else alert(response.data.msg);
+      }).catch(res => {
+        alert(res)
       });
+
     axios
-      .post(API + "customer-contact.php", { action: "list" })
+      .post(
+        //API + "customer-contact.php",
+        API+'cust.php/listCustomerContact',
+        { action: "list" })
       .then((response) => {
         if (response.data.status === 1)
           setCustomerContact(response.data.customer_contactList);
         else alert(response.data.msg);
+      }).catch(res => {
+        alert(res)
       });
   };
 
@@ -45,15 +56,23 @@ function Contact({ clickHandler, currUser }) {
   const submitHandler = () => {
     if (status.action === "Thêm") {
       axios
-        .post(API + "contact-public.php", { action: "add", ...contact })
+        .post(
+          //API + "contact-public.php",
+          API+'cont.php/addContact',
+          { action: "add", ...contact })
         .then((response) => {
           if (response.data.status === 2) alert(response.data.msg);
           else getData();
           setContact({ type: "", content: "" });
+        }).catch(res => {
+          alert(res)
         });
     } else {
       axios
-        .post(API + "contact-public.php", {
+        .post(
+          //API + "contact-public.php",
+          API+'cont.php/editContact',
+          {
           action: "edit",
           id: status.id,
           ...contact,
@@ -72,6 +91,8 @@ function Contact({ clickHandler, currUser }) {
             id: "",
             action: "Thêm",
           });
+        }).catch(res => {
+          alert(res)
         });
     }
   };
@@ -82,10 +103,15 @@ function Contact({ clickHandler, currUser }) {
     );
     if (option) {
       axios
-        .post(API + "contact-public.php", { action: "delete", id: id })
+        .post(
+          //API + "contact-public.php",
+          API+'cont.php/deleteContact',
+          { action: "delete", id: id })
         .then((response) => {
           if (response.data.status === 2) alert(response.data.msg);
           else setContacts((prev) => prev.filter((item) => item.id !== id));
+        }).catch(res => {
+          alert(res)
         });
     }
   };

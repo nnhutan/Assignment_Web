@@ -26,33 +26,41 @@ function Admin() {
   useEffect(() => {
     axios
       .post(
-        API + `authentication.php`,
+        //API + `authentication.php`,
+        API+'autth.php/login',
         {
           action: "login",
         },
         { withCredentials: true }
       )
       .then((res) => {
-        if (res.data.status === 1)
-          setState({ isLoggedIn: true, user: res.data.user });
-        else setState({ isLoggedIn: false, user: {} });
+        //if (res.data.status === 1)
+          setState({ isLoggedIn: true, user: res.data });
+        //else setState({ isLoggedIn: false, user: {} });
         // window.location.href = "/admin";
+      }).catch(res => {
+        console.log(res)
+        setState({ isLoggedIn: false, user: {} })
       });
   }, []);
 
   const clickHandler = () => {
     axios
       .post(
-        API + `authentication.php`,
+        //API + `authentication.php`,
+        API+'autth.php/logout',
         {
           action: "logout",
         },
         { withCredentials: true }
       )
       .then((res) => {
-        console.log(res.data);
-        if (res.data.status === 1) setState({ isLoggedIn: false, user: {} });
+        alert(res.data);
+        //if (res.data.status === 1)
+          setState({ isLoggedIn: false, user: {} });
         // window.location.href = "/admin";
+      }).catch(res => {
+        alert(res)
       });
   };
 

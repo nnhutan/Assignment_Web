@@ -1,17 +1,11 @@
 {
   "folders": [
-	{
-		"path": "."
-	},
-	{
-		"path": "..\\..\\..\\..\\xampp\\htdocs\\myself\\server"
-	},
-	{
-		"path": "..\\..\\..\\..\\xampp\\htdocs\\myself\\webbanhang"
-	},
-	{
-		"path": "..\\..\\..\\..\\xampp\\htdocs\\myself\\assignment\\server"
-	}
-],
+    {
+      "path": "."
+    },
+    {
+      "path": "..\\..\\..\\..\\xampp\\htdocs\\myself\\assignment\\server"
+    }
+  ],
   "settings": {}
 }

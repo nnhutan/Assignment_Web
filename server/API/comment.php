@@ -36,7 +36,7 @@ function listComment()
     } else {
         $res = [
             "status" => 2,
-            "msg" => "failure!!!",
+            "msg" => "failure!!! Have no comment",
             "commentList" => [],
         ];
     }

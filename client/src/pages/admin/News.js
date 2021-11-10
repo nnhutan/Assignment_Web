@@ -16,10 +16,16 @@ function News({ clickHandler, currUser }) {
   const [newsList, setNewsList] = useState([]);
 
   const getData = () => {
-    axios.post(API + "news.php", { action: "list" }).then((response) => {
+    axios.post(
+      //API + "news.php",
+      API+'newa.php/listNews',
+      { action: "list" })
+      .then((response) => {
       if (response.data.status === 1) setNewsList(response.data.newsList);
       else alert(response.data.msg);
-    });
+      }).catch(res => {
+        alert(res)
+      });
   };
 
   useEffect(() => {
@@ -37,15 +43,23 @@ function News({ clickHandler, currUser }) {
   const submitHandler = () => {
     if (status.action === "Thêm") {
       axios
-        .post(API + "news.php", { action: "add", ...news })
+        .post(
+          //API + "news.php",
+          API +'newa.php/addNews',
+          { action: "add", ...news })
         .then((response) => {
           if (response.data.status === 2) alert(response.data.msg);
           else getData();
           setNews({ title: "", thumbnail: "", content: "" });
+        }).catch(res => {
+          alert(res)
         });
     } else {
       axios
-        .post(API + "news.php", {
+        .post(
+          //API + "news.php",
+          API+'newa.php/editNews',
+          {
           action: "edit",
           id: status.id,
           ...news,
@@ -73,10 +87,15 @@ function News({ clickHandler, currUser }) {
     );
     if (option) {
       axios
-        .post(API + "news.php", { action: "delete", id: id })
+        .post(
+          //API + "news.php",
+          API+'newa.php/deleteNews',
+          { action: "delete", id: id })
         .then((response) => {
           if (response.data.status === 2) alert(response.data.msg);
           else setNewsList((prev) => prev.filter((item) => item.id !== id));
+        }).catch(res => {
+          alert(res)
         });
     }
   };
