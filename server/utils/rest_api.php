@@ -122,7 +122,7 @@
 	// Ma hoa mat khau hai lop MD5
 	protected function getSecurityMD5($pwd)
 	{
-		return md5(md5($pwd));
+		return md5(md5($pwd) . PRIVATE_KEY);
 // . protected_KEY);
 	}
 
