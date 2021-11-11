@@ -24,17 +24,27 @@ function Product({ clickHandler, currUser }) {
 
   const getData = () => {
     return axios
-      .post(API + "product.php", { action: "list" })
+      .post(
+        //API + "product.php",
+        API +'prod.php/listProduct',
+        { action: "list" })
       .then((response) => {
         if (response.data.status === 1) setProducts(response.data.productList);
         else alert(response.data.msg);
+      }).catch(res => {
+        alert(res)
       });
   };
 
   useEffect(() => {
     getData();
-    axios.post(API + "category.php", { action: "list" }).then((response) => {
-      if (response.data.status === 1) setCategories(response.data.categoryList);
+    axios.post(
+      //API + "category.php"
+      API +'cate.php/listCategory',
+      { action: "list" })
+      .then((response) => {
+        //if (response.data.status === 1)
+          setCategories(response.data);
     });
   }, []);
 
@@ -61,7 +71,10 @@ function Product({ clickHandler, currUser }) {
   const submitHandler = () => {
     if (status.action === "Thêm") {
       axios
-        .post(API + "product.php", { action: "add", ...product })
+        .post(
+          //API + "product.php",
+        API +'prod.php/addProduct',
+        { action: "add", ...product })
         .then((response) => {
           if (response.data.status === 2) alert(response.data.msg);
           else getData();
@@ -73,10 +86,15 @@ function Product({ clickHandler, currUser }) {
             price: "",
             discount: "",
           });
+        }).catch(res => {
+          alert(res)
         });
     } else {
       axios
-        .post(API + "product.php", {
+        .post(
+          //API + "product.php",
+          API+'prod.php/editProduct',
+          {
           action: "edit",
           id: status.id,
           ...product,
@@ -102,6 +120,8 @@ function Product({ clickHandler, currUser }) {
             id: "",
             action: "Thêm",
           });
+        }).catch(res => {
+          alert(res)
         });
     }
   };
@@ -112,10 +132,15 @@ function Product({ clickHandler, currUser }) {
     );
     if (option) {
       axios
-        .post(API + "product.php", { action: "delete", id: id })
+        .post(
+          //API + "product.php",
+          API+'prod.php/deleteProduct',
+          { action: "delete", id: id })
         .then((response) => {
           if (response.data.status !== 1) alert(response.data.msg);
           else setProducts((prev) => prev.filter((item) => item.id !== id));
+        }).catch(res => {
+          alert(res)
         });
     }
   };

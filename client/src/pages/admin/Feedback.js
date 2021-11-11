@@ -8,26 +8,39 @@ import Pagination from "../../components/Pagination";
 function Feedback({ clickHandler, currUser }) {
   const [comments, setComments] = useState([]);
   useEffect(() => {
-    axios.post(API + "comment.php", { action: "list" }).then((response) => {
+    axios.post(
+      //API + "comment.php",
+      API+"com.php/listComment",
+      { action: "list" })
+      .then((response) => {
       console.log(response.data);
-      if (response.data.status === 1) {
+      //if (response.data.status === 1) {
         setComments(response.data.commentList);
-      } else {
+      /*} else {
         alert(response.data.msg);
-      }
-    });
+      }*/
+      }).catch(res => {
+        alert(res)
+      });
   }, []);
 
   const deleteHandler = (id) => {
     axios
-      .post(API + "comment.php", { action: "delete", id: id })
+      .post(
+        //API + "comment.php", 
+        API + "com.php/deleteComment",
+        { action: "delete", id: id })
       .then((response) => {
-        if (response.data.status === 1) {
+        //if (response.data.status === 1) {
           setComments((prev) => prev.filter((item) => item.id !== id));
-        } else {
+        /*} else {
           alert(response.data.msg);
-        }
+        }*/
+      }).catch(res => {
+        alert(res)
       });
+
+    
   };
 
   const [currentPage, setCurrentPage] = useState(1);

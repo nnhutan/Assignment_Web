@@ -81,7 +81,7 @@
 		$value = '';
 		if (isset($this->params[$key])) {
 			$value = $this->params[$key];
-			$value = fixSqlInject($value);
+			$value =$this-> fixSqlInject($value);
 		}
 		return trim($value);
 	}

@@ -48,14 +48,19 @@ function TopHeader() {
         });
       axios
         .post(
-          API + `contact-public.php`,
+          //API + `contact-public.php`,
+          API+'cont.php/listContact',
           {
           action: "list",
         })
         .then((res) => {
           console.log(res.data);
           if (res.data.status === 1) setContacts(res.data.contactList);
+        }).catch(res => {
+          alert(res)
         });
+
+      
     }
     authen();
   }, []);

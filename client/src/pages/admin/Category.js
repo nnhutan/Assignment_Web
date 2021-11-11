@@ -14,9 +14,16 @@ function Category({ clickHandler, currUser }) {
   const [categories, setCategories] = useState([]);
 
   const getData = () => {
-    axios.post(API + "category.php", { action: "list" }).then((response) => {
-      if (response.data.status === 1) setCategories(response.data.categoryList);
-      else alert(response.data.msg);
+    axios.post(
+      //API + "category.php",
+      API +'cate.php/listCategory',
+      { action: "list" }
+    ).then((response) => {
+      //if (response.data.status === 1)
+        setCategories(response.data);
+      //else alert(response.data.msg);
+    }).catch(res => {
+      alert(res)
     });
   };
 
@@ -35,33 +42,44 @@ function Category({ clickHandler, currUser }) {
   const submitHandler = () => {
     if (status.action === "Thêm") {
       axios
-        .post(API + "category.php", { action: "add", ...category })
+        .post(
+          //API + "category.php",
+          API +'cate.php/addCategory',
+          { action: "add", ...category })
         .then((response) => {
-          if (response.data.status === 2) alert(response.data.msg);
-          else getData();
+          //if (response.data.status === 2) alert(response.data.msg);
+          getData();
           setCategory({ name: "" });
+        }).catch(res => {
+          alert(res)
         });
     } else {
       axios
-        .post(API + "category.php", {
+        .post(
+          //API + "category.php",
+          API +'cate.php/editCategory',
+          {
           action: "edit",
           id: status.id,
           ...category,
         })
         .then((response) => {
-          if (response.data.status === 2) alert(response.data.msg);
-          else {
+          //if (response.data.status === 2) alert(response.data.msg);
+          //else {
             setCategories((prev) => {
               prev[prev.findIndex((item) => item.id === status.id)].name =
                 category.name;
               return prev;
             });
-          }
+          //}
           setCategory({ name: "" });
           setStatus({
             id: "",
             action: "Thêm",
           });
+          alert(response)
+        }).catch(res => {
+          alert(res)
         });
     }
   };
@@ -72,10 +90,16 @@ function Category({ clickHandler, currUser }) {
     );
     if (option) {
       axios
-        .post(API + "category.php", { action: "delete", id: id })
+        .post(
+          //API + "category.php",
+          API +'cate.php/deleteCategory',
+          { action: "delete", id: id })
         .then((response) => {
-          if (response.data.status === 2) alert(response.data.msg);
-          else setCategories((prev) => prev.filter((item) => item.id !== id));
+          //if (response.data.status === 2) alert(response.data.msg);
+          //else 
+          setCategories((prev) => prev.filter((item) => item.id !== id));
+        }).catch(res => {
+          alert(res)
         });
     }
   };
