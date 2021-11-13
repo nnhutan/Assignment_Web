@@ -9,7 +9,7 @@ function TableUser({ users, editHandler, deleteHandler, currUser, offset }) {
           <th>Họ Tên</th>
           <th>Email</th>
           <th>SĐT</th>
-          <th>Địa chỉ</th>
+          <th style={{ minWidth: "80px" }}>Địa chỉ</th>
           <th>Quyền</th>
           <th style={{ width: "80px" }}></th>
           <th style={{ width: "80px" }}></th>

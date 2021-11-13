@@ -1,14 +1,34 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
+import logo from "../logo.png";
 
 function Header({ currPage }) {
+  useEffect(() => {
+    window.addEventListener("scroll", function () {
+      const mainNavbar = document.getElementById("main-navbar");
+      if (mainNavbar !== null) {
+        if (window.scrollY > 50) {
+          mainNavbar.classList.add("fixed-top");
+          // add padding top to show content behind navbar
+          const navbar_height = document.querySelector(
+            ".main-navbar__navbar"
+          ).offsetHeight;
+          document.body.style.paddingTop = navbar_height + "px";
+        } else {
+          document.getElementById("main-navbar").classList.remove("fixed-top");
+          // remove padding top from body
+          document.body.style.paddingTop = "0";
+        }
+      }
+    });
+  });
   return (
-    <div className="bg-light">
+    <div className="bg-light" id="main-navbar">
       <div className="container">
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
+        <nav className="navbar navbar-expand-lg navbar-light bg-light main-navbar__navbar">
           <div className="container-fluid">
-            <Link className="navbar-brand" to="/">
-              TheBell
+            <Link className="navbar-brand d-flex align-items-center" to="/">
+              <img src={logo} alt="logo" />
             </Link>
             <button
               className="navbar-toggler"
@@ -78,7 +98,7 @@ function Header({ currPage }) {
               </div>
               <div className="d-flex justify-content-between">
                 <form className="d-flex">
-                  <div className="input-group">
+                  <div className="input-group input-group-sm">
                     <input
                       className="form-control bg-white border-0 rounded-pill rounded-end shadow-none"
                       type="search"

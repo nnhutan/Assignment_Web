@@ -7,9 +7,9 @@ function TableProduct({ products, editHandler, deleteHandler, offset }) {
         <tr>
           <th>STT</th>
           <th>Tên</th>
-          <th>Hình ảnh</th>
+          <th style={{ minWidth: "100px" }}>Hình ảnh</th>
           <th>Giá</th>
-          <th>Danh mục</th>
+          <th style={{ minWidth: "100px" }}>Danh mục</th>
           <th style={{ width: "80px" }}></th>
           <th style={{ width: "80px" }}></th>
         </tr>

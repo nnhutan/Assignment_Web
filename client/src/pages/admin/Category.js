@@ -14,17 +14,20 @@ function Category({ clickHandler, currUser }) {
   const [categories, setCategories] = useState([]);
 
   const getData = () => {
-    axios.post(
-      //API + "category.php",
-      API +'cate.php/listCategory',
-      { action: "list" }
-    ).then((response) => {
-      //if (response.data.status === 1)
+    axios
+      .post(
+        //API + "category.php",
+        API + "cate.php/listCategory",
+        { action: "list" }
+      )
+      .then((response) => {
+        //if (response.data.status === 1)
         setCategories(response.data);
-      //else alert(response.data.msg);
-    }).catch(res => {
-      alert(res)
-    });
+        //else alert(response.data.msg);
+      })
+      .catch((res) => {
+        alert(res);
+      });
   };
 
   useEffect(() => {
@@ -44,42 +47,46 @@ function Category({ clickHandler, currUser }) {
       axios
         .post(
           //API + "category.php",
-          API +'cate.php/addCategory',
-          { action: "add", ...category })
+          API + "cate.php/addCategory",
+          { action: "add", ...category }
+        )
         .then((response) => {
           //if (response.data.status === 2) alert(response.data.msg);
           getData();
           setCategory({ name: "" });
-        }).catch(res => {
-          alert(res)
+        })
+        .catch((res) => {
+          alert(res);
         });
     } else {
       axios
         .post(
           //API + "category.php",
-          API +'cate.php/editCategory',
+          API + "cate.php/editCategory",
           {
-          action: "edit",
-          id: status.id,
-          ...category,
-        })
+            action: "edit",
+            id: status.id,
+            ...category,
+          }
+        )
         .then((response) => {
           //if (response.data.status === 2) alert(response.data.msg);
           //else {
-            setCategories((prev) => {
-              prev[prev.findIndex((item) => item.id === status.id)].name =
-                category.name;
-              return prev;
-            });
+          setCategories((prev) => {
+            prev[prev.findIndex((item) => item.id === status.id)].name =
+              category.name;
+            return prev;
+          });
           //}
           setCategory({ name: "" });
           setStatus({
             id: "",
             action: "Thêm",
           });
-          alert(response)
-        }).catch(res => {
-          alert(res)
+          alert(response);
+        })
+        .catch((res) => {
+          alert(res);
         });
     }
   };
@@ -92,14 +99,16 @@ function Category({ clickHandler, currUser }) {
       axios
         .post(
           //API + "category.php",
-          API +'cate.php/deleteCategory',
-          { action: "delete", id: id })
+          API + "cate.php/deleteCategory",
+          { action: "delete", id: id }
+        )
         .then((response) => {
           //if (response.data.status === 2) alert(response.data.msg);
-          //else 
+          //else
           setCategories((prev) => prev.filter((item) => item.id !== id));
-        }).catch(res => {
-          alert(res)
+        })
+        .catch((res) => {
+          alert(res);
         });
     }
   };
@@ -114,7 +123,7 @@ function Category({ clickHandler, currUser }) {
   };
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemPerPage = 2;
+  const itemPerPage = 5;
   const numberPage = Math.ceil(categories.length / itemPerPage);
   const currCategories = categories.slice(
     (currentPage - 1) * itemPerPage,

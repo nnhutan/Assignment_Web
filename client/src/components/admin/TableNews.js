@@ -13,8 +13,8 @@ function TableNews({
         <tr>
           <th>STT</th>
           <th>Tiêu đề</th>
-          <th>Hình ảnh</th>
-          <th>Nội dung</th>
+          <th style={{ minWidth: "100px" }}>Hình ảnh</th>
+          <th style={{ minWidth: "100px" }}>Nội dung</th>
           <th style={{ width: "80px" }}></th>
           <th style={{ width: "80px" }}></th>
         </tr>
@@ -39,7 +39,7 @@ function TableNews({
                   data-bs-toggle="modal"
                   data-bs-target="#exampleModal"
                 >
-                  Xem chi tiết
+                  Chi tiết
                 </button>
               </td>
               <td>

@@ -32,21 +32,28 @@ function Slider() {
       <div className="carousel-inner">
         <div className="carousel-item active">
           <img
-            src={process.env.PUBLIC_URL + "./img/logo1.png"}
+            src="https://cdn.mobilecity.vn/mobilecity-vn/images/2021/10/banner-rog-phone-5s.jpg"
             className="d-block w-100"
             alt="..."
           />
         </div>
         <div className="carousel-item">
           <img
-            src={process.env.PUBLIC_URL + "./img/logo1.png"}
+            src="https://cdn.mobilecity.vn/mobilecity-vn/images/2021/10/banner-red-magic-6s-pro.jpg"
             className="d-block w-100"
             alt="..."
           />
         </div>
         <div className="carousel-item">
           <img
-            src={process.env.PUBLIC_URL + "./img/logo1.png"}
+            src="https://cdn.mobilecity.vn/mobilecity-vn/images/2021/07/oneplus-9r-banner-mobilecity.jpg"
+            className="d-block w-100"
+            alt="..."
+          />
+        </div>
+        <div className="carousel-item">
+          <img
+            src="https://cdn.mobilecity.vn/mobilecity-vn/images/2021/10/banner-black-shark-4s-mc.jpg"
             className="d-block w-100"
             alt="..."
           />
