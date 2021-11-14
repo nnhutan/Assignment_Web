@@ -2,3 +2,8 @@
   transform: translateY(-4px);
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
 }
+.fixed-top {
+  top: -20px;
+  transform: translateY(20px);
+  transition: transform 0.3s;
+}

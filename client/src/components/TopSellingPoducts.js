@@ -1,7 +1,7 @@
 import React from "react";
 import Product from "./Product";
 
-function TopSellingPoducts({ products }) {
+function TopSellingPoducts({ products, addToCart }) {
   return (
     <div className="top-selling bg-white mb-5">
       <h3 className="text-center py-4">Sản phẩm bán chạy nhất</h3>
@@ -11,7 +11,7 @@ function TopSellingPoducts({ products }) {
             .filter((item) => item.category_name === "Xiaomi")
             .map((product, index) => (
               <div className="col-lg-3 col-md-6 col-sm-6 col-xs-12" key={index}>
-                <Product product={product} />
+                <Product product={product} addToCart={addToCart} />
               </div>
             ))}
         </div>

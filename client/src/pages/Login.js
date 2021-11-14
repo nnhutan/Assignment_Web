@@ -14,7 +14,7 @@ function Login() {
     axios
       .post(
         //API + `authentication.php`,
-        API+'autth.php/login',
+        API + "autth.php/login",
         {
           action: "login",
         },
@@ -23,10 +23,11 @@ function Login() {
       .then((res) => {
         console.log(res.data);
         //if (res.data.status === 1)
-          setStatus(true);
+        setStatus(true);
         // window.location.href = "/admin";
-      }).catch(res => {
-        console.log(res)
+      })
+      .catch((res) => {
+        console.log(res);
       });
   }, []);
   const [user, setUser] = useState({
@@ -38,13 +39,52 @@ function Login() {
     const { name, value } = e.target;
     setUser((prev) => ({ ...prev, [name]: value }));
   };
-
+  const createCart = async (id) => {
+    axios
+      .post(
+        //API + `authentication.php`,
+        API + "ord.php/listOrder",
+        {
+          action: "list",
+        },
+        { withCredentials: true }
+      )
+      .then((res) => {
+        if (
+          res.data.length === 0 ||
+          res.data.findIndex((item) => item.user_id === id) === -1
+        ) {
+          axios
+            .post(
+              //API + `authentication.php`,
+              API + "ord.php/addOrder",
+              {
+                action: "add",
+                user_id: id,
+              },
+              { withCredentials: true }
+            )
+            .then((res) => {
+              console.log(res.data);
+              // window.location.href = "/admin";
+            })
+            .catch((res, status) => {
+              alert(res, status);
+            });
+        } else {
+          //window.location.href = "/admin";
+        }
+      })
+      .catch((res, status) => {
+        alert(res, status);
+      });
+  };
   const submitHandler = (e) => {
     e.preventDefault();
     axios
       .post(
         //API + `authentication.php`,
-        API+'autth.php/login',
+        API + "autth.php/login",
         {
           action: "login",
           ...user,
@@ -53,12 +93,11 @@ function Login() {
       )
       .then((res) => {
         console.log(res.data);
-        //if (res.data.status === 1) setStatus(true);
-         window.location.href = "/admin";
-        //else alert(res.data.msg);
-      }).catch((res,status) => {
-        alert(res,status)
-        
+        createCart(res.data.id);
+        setStatus(true);
+      })
+      .catch((res, status) => {
+        alert(res, status);
       });
   };
   if (status) return <Redirect to="/admin" />;

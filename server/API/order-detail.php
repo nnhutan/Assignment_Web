@@ -28,19 +28,13 @@ function listOrderDetail()
 
     $sql = "select Order_Details.*, Product.title, Product.thumbnail from Order_Details left join Product on Product.id = Order_Details.product_id where Order_Details.order_id = $orderId";
     $result = executeResult($sql);
-    if (!empty($result)) {
+   
         $res = [
             "status" => 1,
             "msg" => "success!!!",
             "orderList" => $result,
         ];
-    } else {
-        $res = [
-            "status" => 2,
-            "msg" => "failure!!!",
-            "orderList" => [],
-        ];
-    }
+
     echo json_encode($res);
 }
 

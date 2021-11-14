@@ -6,8 +6,8 @@ const style = {
   transition: "all 0.2s ease-in-out",
 };
 
-function Product({ product }) {
-  const { title, price, thumbnail } = product;
+function Product({ product, addToCart }) {
+  const { id, title, price, thumbnail } = product;
   return (
     <div role="button" className="card product-card" style={style}>
       <img
@@ -33,9 +33,12 @@ function Product({ product }) {
             suffix={" ₫ "}
           />
         </p>
-        <Link to="/checkout" className="btn btn-outline-primary">
+        <button
+          className="btn btn-outline-primary"
+          onClick={() => addToCart(id)}
+        >
           <i className="bi bi-cart-plus"></i> Thêm vào giỏ hàng
-        </Link>
+        </button>
       </div>
     </div>
   );

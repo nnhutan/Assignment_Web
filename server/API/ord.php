@@ -10,22 +10,8 @@
 		{
 			$sql = "select * from Orders order by status asc, order_date desc";
 			$result = executeResult($sql);
-			if (!empty($result)) {
-				$res = [
-					"status" => 1,
-					"msg" => "success!!!",
-					"orderList" => $result,
-				];
-				$this->response(200,$res);
-			} else {
-				$res = [
-					"status" => 2,
-					"msg" => "failure!!!",
-					"orderList" => [],
-				];
-				$this->response(404,"No order");
-			}
-			//echo json_encode($res);
+				$this->response(200,$result);
+			
 		}
 
 		function addOrder()
@@ -43,6 +29,7 @@
 				$res = [
 					"status" => 1,
 					"msg" => "success!!!",
+					"sql" => $sql
 				];
 				$this->response(200,$res);
 			} else {

@@ -1,10 +1,115 @@
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import API from "../API/api";
 import Header from "../components/Header";
 import { Link } from "react-router-dom";
+import NumberFormat from "react-number-format";
+import Footer from "../components/Footer";
 
 function Cart() {
+  const [products, setProducts] = useState([]);
+  const authen = () => {
+    axios
+      .post(
+        //API + `authentication.php`,
+        API + "autth.php/login",
+        {
+          action: "login",
+        },
+        { withCredentials: true }
+      )
+      .then((res) => {
+        getCart(true, res.data.id);
+        console.log(res.data);
+      })
+      .catch((res) => {
+        getCart(false, "");
+        console.log(res);
+      });
+  };
+
+  const getCart = async (flag, id) => {
+    if (flag) {
+      axios
+        .post(
+          //API + `authentication.php`,
+          API + "ord.php/listOrder"
+        )
+        .then((res) => {
+          const orderId =
+            res.data[res.data.findIndex((item) => item.user_id === id)].id;
+
+          axios
+            .post(
+              //API + `authentication.php`,
+              API + "order-.php/listOrderDetail",
+              {
+                action: "list",
+                order_id: orderId,
+              }
+            )
+            .then((res) => {
+              setProducts(res.data);
+            })
+            .catch((res) => {
+              console.log(res);
+            });
+        })
+        .catch((res) => {
+          console.log(res);
+        });
+    } else {
+      console.log("use session");
+    }
+  };
+  useEffect(() => {
+    authen();
+  }, []);
+
+  const deleteHandler = (id) => {
+    axios
+      .post(
+        //API + `authentication.php`,
+        API + "order-.php/deleteOrderDetail",
+        {
+          id: id,
+        }
+      )
+      .then((res) => {
+        setProducts((prev) => prev.filter((item) => item.id !== id));
+        console.log(res.data);
+      })
+      .catch((res) => {
+        console.log(res);
+      });
+  };
+
+  const changeNumHandler = (e, index, id) => {
+    axios
+      .post(
+        //API + `authentication.php`,
+        API + "order-.php/editOrderDetail",
+        {
+          id: id,
+          num: e.target.value,
+        }
+      )
+      .then((res) => {
+        console.log(res.data);
+        setProducts((prev) => {
+          prev[index].num = e.target.value;
+          return [...prev];
+        });
+      })
+      .catch((res) => {
+        console.log(res);
+      });
+  };
+  const totalProductMoney = products.reduce((a, b) => a + b.price * b.num, 0);
+  const vat = 0.1 * totalProductMoney;
   return (
     <div className="cart-page">
-      <Header currPage="cart" />
+      <Header currPage="cart" cart={products.length} />
       <div className="container">
         <h3 className="text-center my-3">Giỏ hàng</h3>
         <hr />
@@ -32,96 +137,61 @@ function Cart() {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <th scope="row">1</th>
-                    <td>
-                      <a href="#" className="text-danger">
-                        <i class="bi bi-trash"></i>
-                      </a>
-                    </td>
-                    <td>
-                      <img
-                        src="https://themesbox.in/admin-templates/olian/html/light-vertical/assets/images/ecommerce/product_01.svg"
-                        className="img-fluid"
-                        width="35"
-                        alt="product"
-                      />
-                    </td>
-                    <td>Apple Watch</td>
-                    <td>
-                      <div className="form-group mb-0">
-                        <input
-                          type="number"
-                          className="form-control cart-qty"
-                          name="cartQty1"
-                          id="cartQty1"
-                          value="1"
+                  {products.map((item, index) => (
+                    <tr key={item.id}>
+                      <th scope="row">{index + 1}</th>
+                      <td>
+                        <a href="#" className="text-danger">
+                          <i
+                            className="bi bi-trash"
+                            role="button"
+                            onClick={() => deleteHandler(item.id)}
+                          ></i>
+                        </a>
+                      </td>
+                      <td>
+                        <img
+                          src={item.thumbnail}
+                          className="img-fluid"
+                          width="35"
+                          alt="product"
                         />
-                      </div>
-                    </td>
-                    <td>$10</td>
-                    <td className="text-right">$500</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">2</th>
-                    <td>
-                      <a href="#" className="text-danger">
-                        <i class="bi bi-trash"></i>
-                      </a>
-                    </td>
-                    <td>
-                      <img
-                        src="https://themesbox.in/admin-templates/olian/html/light-vertical/assets/images/ecommerce/product_02.svg"
-                        className="img-fluid"
-                        width="35"
-                        alt="product"
-                      />
-                    </td>
-                    <td>Apple iPhone</td>
-                    <td>
-                      <div className="form-group mb-0">
-                        <input
-                          type="number"
-                          className="form-control cart-qty"
-                          name="cartQty2"
-                          id="cartQty2"
-                          value="1"
+                      </td>
+                      <td>{item.title}</td>
+                      <td>
+                        <div className="form-group mb-0">
+                          <input
+                            type="number"
+                            className="form-control cart-qty"
+                            name="cartQty1"
+                            id="cartQty1"
+                            defaultValue={item.num}
+                            onChange={(e) =>
+                              changeNumHandler(e, index, item.id)
+                            }
+                            min="1"
+                          />
+                        </div>
+                      </td>
+                      <td>
+                        <NumberFormat
+                          value={item.price}
+                          displayType={"text"}
+                          thousandSeparator={true}
+                          suffix={" ₫ "}
                         />
-                      </div>
-                    </td>
-                    <td>$20</td>
-                    <td className="text-right">$200</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">3</th>
-                    <td>
-                      <a href="#" className="text-danger">
-                        <i class="bi bi-trash"></i>
-                      </a>
-                    </td>
-                    <td>
-                      <img
-                        src="https://themesbox.in/admin-templates/olian/html/light-vertical/assets/images/ecommerce/product_03.svg"
-                        className="img-fluid"
-                        width="35"
-                        alt="product"
-                      />
-                    </td>
-                    <td>Apple iPad</td>
-                    <td>
-                      <div className="form-group mb-0">
-                        <input
-                          type="number"
-                          className="form-control cart-qty"
-                          name="cartQty3"
-                          id="cartQty3"
-                          value="1"
+                      </td>
+                      <td className="text-right">
+                        <NumberFormat
+                          id="total"
+                          value={item.price * item.num}
+                          displayType={"text"}
+                          thousandSeparator={true}
+                          suffix={" ₫ "}
                         />
-                      </div>
-                    </td>
-                    <td>$30</td>
-                    <td className="text-right">$300</td>
-                  </tr>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
@@ -129,11 +199,11 @@ function Cart() {
           <hr />
           <div className="body">
             <div className="row">
-              <div className="col-md-12 order-2 order-lg-1 col-lg-5 col-xl-6">
+              <div className="col-md-12 col-lg-6 order-2 order-lg-1 col-lg-5 col-xl-6">
                 <div className="order-note">
                   <form>
                     <div className="form-group">
-                      <div className="input-group">
+                      {/* <div className="input-group">
                         <input
                           type="search"
                           className="form-control"
@@ -150,10 +220,10 @@ function Cart() {
                             Áp dụng
                           </button>
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                     <div className="form-group">
-                      <label for="specialNotes" className="mt-2 mb-1">
+                      <label htmlFor="specialNotes" className="mt-2 mb-1">
                         Ghi chú:
                       </label>
                       <textarea
@@ -167,28 +237,62 @@ function Cart() {
                   </form>
                 </div>
               </div>
-              <div className="col-md-12 order-1 order-lg-2 col-lg-7 col-xl-6">
+              <div className="col-md-12 col-lg-6 order-1 order-lg-2 col-lg-7 col-xl-6">
                 <div className="order-total table-responsive ">
-                  <table className="table table-borderless text-right">
+                  <table className="table table-borderless text-end">
                     <tbody>
                       <tr>
                         <td>Tổng tiền hàng:</td>
-                        <td>$1000.00</td>
+                        <td>
+                          <NumberFormat
+                            id="total"
+                            value={totalProductMoney}
+                            displayType={"text"}
+                            thousandSeparator={true}
+                            suffix={" ₫ "}
+                          />
+                        </td>
                       </tr>
                       <tr>
                         <td>Vận chuyển:</td>
-                        <td>$0.00</td>
+                        <td>
+                          {" "}
+                          <NumberFormat
+                            id="total"
+                            value={0}
+                            displayType={"text"}
+                            thousandSeparator={true}
+                            suffix={" ₫ "}
+                          />
+                        </td>
                       </tr>
                       <tr>
-                        <td>VAT (18%):</td>
-                        <td>$180.00</td>
+                        <td>VAT (10%):</td>
+                        <td>
+                          <NumberFormat
+                            id="total"
+                            value={vat}
+                            displayType={"text"}
+                            thousandSeparator={true}
+                            suffix={" ₫ "}
+                          />
+                        </td>
                       </tr>
                       <tr>
                         <td className="">
                           <h4>Tổng:</h4>
                         </td>
                         <td className="">
-                          <h4>$1180.00</h4>
+                          <h4>
+                            {" "}
+                            <NumberFormat
+                              id="total"
+                              value={totalProductMoney + vat}
+                              displayType={"text"}
+                              thousandSeparator={true}
+                              suffix={" ₫ "}
+                            />
+                          </h4>
                         </td>
                       </tr>
                     </tbody>
@@ -198,17 +302,18 @@ function Cart() {
             </div>
           </div>
           <hr />
-          <div className="cart-footer d-flex justify-content-end">
-            <button type="button" className="btn btn-info my-1 me-2">
-              <i class="bi bi-file-earmark-plus me-2"></i>Update Cart
-            </button>
+          <div className="cart-footer d-flex justify-content-end mb-3">
+            <Link to="/product" className="btn btn-info my-1 me-2">
+              <i className="bi bi-file-earmark-plus me-2"></i>Update Cart
+            </Link>
             <Link to="/checkout" className="btn btn-success my-1">
               Proceed to Checkout
-              <i class="bi bi-arrow-right ms-2"></i>
+              <i className="bi bi-arrow-right ms-2"></i>
             </Link>
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

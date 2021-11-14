@@ -50,7 +50,7 @@ CREATE TABLE `Customer_Contact` (
   `phone_number` varchar(255)
 );
 
-CREATE TABLE `Oders` (
+CREATE TABLE `orders` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `user_id` int,
   `note` varchar(255),

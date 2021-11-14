@@ -1,13 +1,77 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import API from "../API/api";
 import { Link } from "react-router-dom";
 import logo from "../logo.png";
 
-function Header({ currPage }) {
+function Header({ currPage, cart }) {
+  console.log(cart);
+  // I'm sorry, it's only now that I see my stupidity.
+  // I should have used Context Switch or something to avoid code duplication
+  const [numProductInCart, setNumProductInCart] = useState(cart);
+  const authen = () => {
+    axios
+      .post(
+        //API + `authentication.php`,
+        API + "autth.php/login",
+        {
+          action: "login",
+        },
+        { withCredentials: true }
+      )
+      .then((res) => {
+        getCart(true, res.data.id);
+        console.log(res.data);
+      })
+      .catch((res) => {
+        getCart(false, "");
+        console.log(res);
+      });
+  };
+
+  const getCart = async (flag, id) => {
+    if (flag) {
+      axios
+        .post(
+          //API + `authentication.php`,
+          API + "ord.php/listOrder"
+        )
+        .then((res) => {
+          const orderId =
+            res.data[res.data.findIndex((item) => item.user_id === id)].id;
+          axios
+            .post(
+              //API + `authentication.php`,
+              API + "order-.php/listOrderDetail",
+              {
+                action: "list",
+                order_id: orderId,
+              }
+            )
+            .then((res) => {
+              setNumProductInCart(res.data.length);
+            })
+            .catch((res) => {
+              console.log(res);
+            });
+        })
+        .catch((res) => {
+          console.log(res);
+        });
+    } else {
+      console.log("use session");
+    }
+  };
   useEffect(() => {
+    if (cart === undefined) {
+      authen();
+    } else setNumProductInCart(cart);
     window.addEventListener("scroll", function () {
       const mainNavbar = document.getElementById("main-navbar");
       if (mainNavbar !== null) {
-        if (window.scrollY > 50) {
+        const topHeader_height =
+          document.querySelector(".js-top-header").offsetHeight;
+        if (window.scrollY >= topHeader_height) {
           mainNavbar.classList.add("fixed-top");
           // add padding top to show content behind navbar
           const navbar_height = document.querySelector(
@@ -15,7 +79,7 @@ function Header({ currPage }) {
           ).offsetHeight;
           document.body.style.paddingTop = navbar_height + "px";
         } else {
-          document.getElementById("main-navbar").classList.remove("fixed-top");
+          mainNavbar.classList.remove("fixed-top");
           // remove padding top from body
           document.body.style.paddingTop = "0";
         }
@@ -23,9 +87,9 @@ function Header({ currPage }) {
     });
   });
   return (
-    <div className="bg-light" id="main-navbar">
+    <div className="bg-light main-navbar__navbar" id="main-navbar">
       <div className="container">
-        <nav className="navbar navbar-expand-lg navbar-light bg-light main-navbar__navbar">
+        <nav className="navbar  navbar-expand-lg navbar-light bg-light ">
           <div className="container-fluid">
             <Link className="navbar-brand d-flex align-items-center" to="/">
               <img src={logo} alt="logo" />
@@ -123,7 +187,8 @@ function Header({ currPage }) {
                   >
                     <i className="bi bi-cart"></i>
                     <span className="position-absolute top-1 start-100 translate-middle bg-danger border border-light rounded-circle text-white px-2">
-                      2<span className="visually-hidden">New alerts</span>
+                      {numProductInCart}
+                      <span className="visually-hidden">New alerts</span>
                     </span>
                   </button>
                 </Link>

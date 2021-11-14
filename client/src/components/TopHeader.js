@@ -8,7 +8,7 @@ function TopHeader() {
     axios
       .post(
         //API + `authentication.php`,
-        API+'autth.php/logout',
+        API + "autth.php/logout",
         {
           action: "logout",
         },
@@ -17,10 +17,11 @@ function TopHeader() {
       .then((res) => {
         alert(res.data);
         //if (res.data.status === 1)
-          setState({ isLoggedIn: false, user: {} });
-        // window.location.href = "/admin";
-      }).catch(res => {
-        alert(res)
+        setState({ isLoggedIn: false, user: {} });
+        window.location.href = "/";
+      })
+      .catch((res) => {
+        alert(res);
       });
   };
   const [state, setState] = useState({
@@ -28,12 +29,13 @@ function TopHeader() {
     user: {},
   });
   const [contacts, setContacts] = useState([]);
+
   useEffect(() => {
     async function authen() {
       axios
         .post(
           //API + `authentication.php`,
-          API+'autth.php/login',
+          API + "autth.php/login",
           {
             action: "login",
           },
@@ -42,30 +44,31 @@ function TopHeader() {
         .then((res) => {
           //if (res.data.status === 1)
           setState({ isLoggedIn: true, user: res.data });
-          console.log(res.data)
-        }).catch(res => {
-          console.log(res)
+          console.log(res.data);
+        })
+        .catch((res) => {
+          console.log(res);
         });
       axios
         .post(
           //API + `contact-public.php`,
-          API+'cont.php/listContact',
+          API + "cont.php/listContact",
           {
-          action: "list",
-        })
+            action: "list",
+          }
+        )
         .then((res) => {
           console.log(res.data);
           if (res.data.status === 1) setContacts(res.data.contactList);
-        }).catch(res => {
-          alert(res)
+        })
+        .catch((res) => {
+          alert(res);
         });
-
-      
     }
     authen();
   }, []);
   return (
-    <div className="bg-white">
+    <div className="bg-white js-top-header">
       <div
         className="container d-flex justify-content-sm-between justify-content-end align-items-center px-4 py-1"
         style={{ fontSize: "14px" }}
@@ -126,7 +129,10 @@ function TopHeader() {
                 >
                   <span className="visually-hidden">Toggle Dropdown</span>
                 </button>
-                <ul className="dropdown-menu dropdown-menu-end">
+                <ul
+                  className="dropdown-menu dropdown-menu-end"
+                  style={{ zIndex: "1031" }}
+                >
                   {state.user !== {} && state.user.role_id === "1" ? (
                     <li>
                       <Link className="dropdown-item" to="/admin">
