@@ -122,10 +122,10 @@ function User() {
     <>
       <div
         className="signup bg-light d-flex align-items-center"
-        style={{ height: "100vh" }}
+        style={{ minHeight: "100vh" }}
       >
         <div
-          className=" bg-white container py-3 position-relative"
+          className=" bg-white container py-5 pe-3 position-relative"
           style={styleSignup}
         >
           <Link to="/">
@@ -149,9 +149,9 @@ function User() {
           >
             <i className="bi bi-box-arrow-in-right"></i>
           </button>
-          <div className="signup-content row py-0 g-0 ps-5 pe-4">
-            <div className="row">
-              <div className="col-lg-4">
+          <div className="signup-content row py-0 g-0 ps-lg-5 pe-lg-4 justify-content-center">
+            <div className="row g-0 gx-md-2">
+              <div className="col-lg-4 col-md-5 col-12">
                 <div className="card" style={{ borderRadius: "4px" }}>
                   <img
                     src="https://pdp.edu.vn/wp-content/uploads/2021/05/avatar-hinh-anh-dai-dien-nguoi-giau-mat.jpg"
@@ -197,7 +197,7 @@ function User() {
                   </div>
                 </div>
               </div>
-              <div className="col-lg-8">
+              <div className="col-lg-8 col-md-7 col-12">
                 <table className="table table-responsive pt-0">
                   <thead>
                     <tr>

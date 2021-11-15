@@ -54,15 +54,6 @@ function Header({ clickHandler, currPage, currUser }) {
                   <i className="bi bi-file-earmark-text me-2"></i>
                   Sản phẩm
                 </Link>
-                <Link
-                  className={
-                    currPage === "order" ? "nav-link active" : "nav-link"
-                  }
-                  to="/admin/order"
-                >
-                  <i className="bi bi-minecart me-2"></i>
-                  Đơn hàng
-                </Link>
 
                 <Link
                   className={
@@ -73,6 +64,17 @@ function Header({ clickHandler, currPage, currUser }) {
                   <i className="bi bi-people me-2"></i>
                   Người dùng
                 </Link>
+
+                <Link
+                  className={
+                    currPage === "news" ? "nav-link active" : "nav-link"
+                  }
+                  to="/admin/news"
+                >
+                  <i className="bi bi-newspaper me-2"></i>
+                  Tin tức
+                </Link>
+
                 <li className="nav-item dropdown">
                   <a
                     className={
@@ -99,10 +101,10 @@ function Header({ clickHandler, currPage, currUser }) {
                         <i className="bi bi-person-rolodex me-2"></i>
                         Thông tin liên hệ
                       </>
-                    ) : currPage === "news" ? (
+                    ) : currPage === "order" ? (
                       <>
-                        <i className="bi bi-newspaper me-2"></i>
-                        Tin tức
+                        <i className="bi bi-minecart me-2"></i>
+                        Đơn hàng
                       </>
                     ) : (
                       <>
@@ -143,14 +145,14 @@ function Header({ clickHandler, currPage, currUser }) {
                     </li>
                     <Link
                       className={
-                        currPage === "news"
+                        currPage === "order"
                           ? "dropdown-item active"
                           : "dropdown-item"
                       }
-                      to="/admin/news"
+                      to="/admin/order"
                     >
-                      <i className="bi bi-newspaper me-2"></i>
-                      Tin tức
+                      <i className="bi bi-minecart me-2"></i>
+                      Đơn hàng
                     </Link>
                   </ul>
                 </li>

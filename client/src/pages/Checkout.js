@@ -111,10 +111,13 @@ function Checkout() {
                   <label htmlFor="payment" className="form-label">
                     Hình thức thanh toán
                   </label>
-                  <select name="payment" id="payment" className="form-select">
-                    <option value="" selected>
-                      Thanh toán khi nhận hàng
-                    </option>
+                  <select
+                    name="payment"
+                    id="payment"
+                    className="form-select"
+                    defaultValue="1"
+                  >
+                    <option value="1">Thanh toán khi nhận hàng</option>
                   </select>
                 </form>
                 <div className="text-center">
