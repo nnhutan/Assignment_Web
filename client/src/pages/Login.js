@@ -92,7 +92,6 @@ function Login() {
         { withCredentials: true }
       )
       .then((res) => {
-        console.log(res.data);
         createCart(res.data.id);
         setStatus(true);
       })

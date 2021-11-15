@@ -26,17 +26,18 @@ function User({ clickHandler, currUser }) {
     axios
       .post(
         //API + "authentication.php",
-        API +'autth.php/userList',
+        API + "autth.php/userList",
         { action: "list" },
         { withCredentials: true }
       )
       .then((response) => {
-        //if (response.data.status === 1) 
+        //if (response.data.status === 1)
         setUsers(response.data);
         //else alert(response.data.msg);
-      }).catch(res => {
-        alert(res)
       })
+      .catch((res) => {
+        alert(res);
+      });
   };
 
   useEffect(() => {
@@ -44,15 +45,16 @@ function User({ clickHandler, currUser }) {
     axios
       .post(
         //API + "authentication.php",
-        API+'autth.php/getRole',
+        API + "autth.php/getRole",
         { action: "role" },
         { withCredentials: true }
       )
       .then((response) => {
-        //if (response.data.status === 1) 
+        //if (response.data.status === 1)
         setRoles(response.data);
-      }).catch(res => {
-        alert(res)
+      })
+      .catch((res) => {
+        alert(res);
       });
   }, []);
 
@@ -99,8 +101,7 @@ function User({ clickHandler, currUser }) {
     } else {
       axios
         .post(
-          //API + "authentication.php",
-          API +'autth.php/editUser',
+          API + "autth.php/editUser",
           {
             action: "edit",
             id: status.id,
@@ -109,14 +110,11 @@ function User({ clickHandler, currUser }) {
           { withCredentials: true }
         )
         .then((response) => {
-          //if (response.data.status !== 1) alert(response.data.msg);
-          //else {
-            setUsers((prev) => {
-              const idx = prev.findIndex((item) => item.id === status.id);
-              prev[idx] = { ...prev[idx], ...user };
-              return prev;
-            });
-          //}
+          setUsers((prev) => {
+            const idx = prev.findIndex((item) => item.id === status.id);
+            prev[idx] = { ...prev[idx], ...user };
+            return prev;
+          });
           setUser({
             fullname: "",
             role_id: "",
@@ -129,8 +127,9 @@ function User({ clickHandler, currUser }) {
             id: "",
             action: "Thêm",
           });
-        }).catch(res => {
-          alert(res)
+        })
+        .catch((res) => {
+          alert(res);
         });
     }
   };
@@ -143,7 +142,7 @@ function User({ clickHandler, currUser }) {
       axios
         .post(
           //API + "authentication.php",
-          API+'autth.php/deleteUser',
+          API + "autth.php/deleteUser",
           { action: "delete", id: id },
           { withCredentials: true }
         )
@@ -151,8 +150,9 @@ function User({ clickHandler, currUser }) {
           //if (response.data.status === 2) alert(response.data.msg);
           //else
           setUsers((prev) => prev.filter((item) => item.id !== id));
-        }).catch(res => {
-          alert(res)
+        })
+        .catch((res) => {
+          alert(res);
         });
     }
   };

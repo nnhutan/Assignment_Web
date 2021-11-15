@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, Redirect } from "react-router-dom";
 import axios from "axios";
 import API from "../API/api";
+var md5 = require("md5");
 
 const styleSignup = {
   borderRadius: "30px",
@@ -66,25 +67,39 @@ function User() {
   };
 
   const submitHandler = () => {
-    axios
-      .post(
-        //API + `authentication.php`,
-        API + "autth.php/editUser",
-        {
-          action: "edit",
-          ...user,
-        },
-        { withCredentials: true }
-      )
-      .then((res) => {
-        setState((prev) => ({ ...prev, user: user }));
-        setUser((prev) => ({ ...prev, password: "" }));
-        document.getElementById("new-password").value = "";
-        document.getElementById("old-password").value = "";
-      })
-      .catch((res, status) => {
-        console.log(res, status);
-      });
+    const oldPassword = md5(
+      md5(document.getElementById("old-password").value) +
+        "sjdgfsdj(*&*&6234jhsdgfjhsdsdfk&*^UUUdd"
+    );
+    const newPassword = document.getElementById("new-password").value;
+    console.log(oldPassword, state.user.password, newPassword.length);
+    if (oldPassword !== state.user.password) alert("Mật khẩu cũ không đúng!");
+    else if (newPassword.length < 6)
+      alert("Vui lòng nhập mật khẩu mới tối thiểu 6 ký tự!");
+    else {
+      const newUser = { ...user, password: newPassword };
+      axios
+        .post(
+          //API + `authentication.php`,
+          API + "autth.php/editUser",
+          {
+            action: "edit",
+            ...newUser,
+          },
+          { withCredentials: true }
+        )
+        .then((res) => {
+          setState((prev) => ({ ...prev, user: user }));
+          setUser((prev) => ({ ...prev, password: "" }));
+          document.getElementById("new-password").value = "";
+          document.getElementById("old-password").value = "";
+        })
+        .catch((res, status) => {
+          console.log(res, status);
+        });
+    }
+    document.getElementById("new-password").value = "";
+    document.getElementById("old-password").value = "";
   };
   const closeHandler = (type) => {
     switch (type) {

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import API from "../API/api";
 import { Link, Redirect } from "react-router-dom";
 import axios from "axios";
+import $ from "jquery";
 
 const styleSignup = {
   borderRadius: "30px",
@@ -25,6 +26,81 @@ function Signup() {
       .catch((res) => {
         console.log(res);
       });
+
+    const validate = () => {
+      $(".form-control:not(#confirmation_pwd, #email)").on("blur", function () {
+        if ($(this).val() === "") {
+          $(this).removeClass("is-valid").addClass("is-invalid");
+        } else {
+          $(this).removeClass("is-invalid").addClass("is-valid");
+        }
+      });
+
+      $(".form-control:not(#confirmation_pwd,#password,#email)").on(
+        "input",
+        function () {
+          $(this).removeClass("is-invalid").addClass("is-valid");
+        }
+      );
+
+      $("#email").on("input", function () {
+        var regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+        if (regex.test($(this).val())) {
+          $(this).removeClass("is-invalid").addClass("is-valid");
+        } else {
+          $(this).removeClass("is-valid").addClass("is-invalid");
+        }
+      });
+
+      $("#email").on("blur", function () {
+        var regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+        if (regex.test($(this).val())) {
+          $(this).removeClass("is-invalid").addClass("is-valid");
+        } else {
+          $(this).removeClass("is-valid").addClass("is-invalid");
+        }
+      });
+
+      $("#password").on("input", function () {
+        if (
+          $("#confirmation_pwd").val() !== $(this).val() &&
+          $("#confirmation_pwd").val() !== ""
+        ) {
+          $("#confirmation_pwd").removeClass("is-valid").addClass("is-invalid");
+        } else if (
+          $("#confirmation_pwd").val() === $(this).val() &&
+          $("#confirmation_pwd").val() !== ""
+        ) {
+          $("#confirmation_pwd").removeClass("is-invalid").addClass("is-valid");
+        } else {
+          $(this).removeClass("is-invalid").addClass("is-valid");
+        }
+      });
+
+      $("#confirmation_pwd").on("keyup", function () {
+        if ($("#password").val() !== $(this).val()) {
+          $(this).removeClass("is-valid").addClass("is-invalid");
+        } else {
+          $(this).removeClass("is-invalid").addClass("is-valid");
+        }
+      });
+
+      $("#confirmation_pwd").on("blur", function () {
+        if ($("#password").val() !== $(this).val() || $(this).val() === "") {
+          $(this).removeClass("is-valid").addClass("is-invalid");
+        } else {
+          $(this).removeClass("is-invalid").addClass("is-valid");
+        }
+      });
+
+      $("#remember-me").on("change", function () {
+        if (!$(this).checked)
+          $(this).removeClass("is-invalid").addClass("is-valid");
+        else $(this).removeClass("is-valid").addClass("is-invalid");
+      });
+    };
+
+    validate();
   }, []);
 
   const [user, setUser] = useState({
@@ -38,19 +114,40 @@ function Signup() {
     setUser((prev) => ({ ...prev, [name]: value }));
   };
 
-  const submitHandler = () => {
-    axios
-      .post(API + "autth.php/register", {
-        action: "register",
-        role_id: "1",
-        ...user,
-      })
-      .then((res) => {
-        window.location.href = "/login";
-      })
-      .catch((res) => {
-        alert(res);
-      });
+  const submitHandler = (e) => {
+    const inputs = document.querySelectorAll(".form-control");
+    const inputCheckBox = document.querySelector(".form-check-input");
+    var flag = false;
+    if (!inputCheckBox.checked) {
+      flag = true;
+      inputCheckBox.classList.add("is-invalid");
+    }
+    Array.prototype.slice.call(inputs).forEach((input) => {
+      if (input.classList.contains("is-invalid")) {
+        flag = true;
+      }
+      if (input.value === "") {
+        flag = true;
+        input.classList.add("is-invalid");
+      }
+    });
+    if (flag) {
+      e.preventDefault();
+      e.stopPropagation();
+    } else {
+      axios
+        .post(API + "autth.php/register", {
+          action: "register",
+          role_id: "1",
+          ...user,
+        })
+        .then((res) => {
+          window.location.href = "/login";
+        })
+        .catch((res) => {
+          alert(res);
+        });
+    }
   };
 
   if (status) return <Redirect to="/admin" />;
@@ -77,7 +174,12 @@ function Signup() {
         <div className="signup-content row py-4 g-0 ps-5 pe-3">
           <div className="signup-form col-lg-6 ps-5 ">
             <h1 className="form-title mb-4">Đăng ký</h1>
-            <form method="" className="register-form" id="signup-form">
+            <form
+              method=""
+              className="register-form needs-validation"
+              id="signup-form"
+              noValidate
+            >
               <div className="input-group mb-4 w-75">
                 <label
                   htmlFor="fullname"
@@ -143,7 +245,7 @@ function Signup() {
                   className="form-control border-0 border-bottom border-secondary rounded-0 shadow-none"
                   type="password"
                   name="repeat-password"
-                  id="repeat-password"
+                  id="confirmation_pwd"
                   placeholder="Nhập lại mật khẩu"
                   required
                 />
@@ -155,6 +257,7 @@ function Signup() {
                   id="remember-me"
                   className="remember-me form-check-input"
                   required
+                  value=""
                 />
                 <label
                   htmlFor="accept-term"
@@ -165,7 +268,7 @@ function Signup() {
               </div>
               <div
                 type="submit"
-                className="f btn btn-primary my-3 py-2 px-5"
+                className="btn btn-primary my-3 py-2 px-5"
                 onClick={submitHandler}
               >
                 Đăng ký
