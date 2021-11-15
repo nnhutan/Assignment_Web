@@ -8,25 +8,6 @@ import Footer from "../components/Footer";
 
 function Checkout() {
   const [products, setProducts] = useState([]);
-  const authen = () => {
-    axios
-      .post(
-        //API + `authentication.php`,
-        API + "autth.php/login",
-        {
-          action: "login",
-        },
-        { withCredentials: true }
-      )
-      .then((res) => {
-        getCart(true, res.data.id);
-        console.log(res.data);
-      })
-      .catch((res) => {
-        getCart(false, "");
-        console.log(res);
-      });
-  };
 
   const getCart = async (flag, id) => {
     if (flag) {
@@ -59,10 +40,40 @@ function Checkout() {
           console.log(res);
         });
     } else {
-      console.log("use session");
+      axios
+        .post(
+          //API + `authentication.php`,
+          API + "cart.php/listCart",
+          {},
+          { withCredentials: true }
+        )
+        .then((res) => {
+          setProducts(res.data);
+        })
+        .catch((res) => {
+          console.log(res);
+        });
     }
   };
   useEffect(() => {
+    const authen = () => {
+      axios
+        .post(
+          //API + `authentication.php`,
+          API + "autth.php/login",
+          {
+            action: "login",
+          },
+          { withCredentials: true }
+        )
+        .then((res) => {
+          getCart(true, res.data.id);
+        })
+        .catch((res) => {
+          getCart(false, "");
+          console.log(res);
+        });
+    };
     authen();
   }, []);
   const totalProductMoney = products.reduce((a, b) => a + b.price * b.num, 0);
@@ -241,7 +252,7 @@ function Checkout() {
         id="staticBackdrop"
         data-bs-backdrop="static"
         data-bs-keyboard="false"
-        tabindex="-1"
+        tabIndex="-1"
         aria-labelledby="staticBackdropLabel"
         aria-hidden="true"
       >

@@ -27,40 +27,27 @@ function Admin() {
     axios
       .post(
         //API + `authentication.php`,
-        API+'autth.php/login',
-        {
-          action: "login",
-        },
+        API + "autth.php/login",
+        {},
         { withCredentials: true }
       )
       .then((res) => {
-        //if (res.data.status === 1)
-          setState({ isLoggedIn: true, user: res.data });
-        //else setState({ isLoggedIn: false, user: {} });
-        // window.location.href = "/admin";
-      }).catch(res => {
-        console.log(res)
-        setState({ isLoggedIn: false, user: {} })
+        setState({ isLoggedIn: true, user: res.data });
+      })
+      .catch((res) => {
+        console.log(res);
+        setState({ isLoggedIn: false, user: {} });
       });
   }, []);
 
   const clickHandler = () => {
     axios
-      .post(
-        //API + `authentication.php`,
-        API+'autth.php/logout',
-        {
-          action: "logout",
-        },
-        { withCredentials: true }
-      )
+      .post(API + "autth.php/logout", {}, { withCredentials: true })
       .then((res) => {
-        alert(res.data);
-        //if (res.data.status === 1)
-          setState({ isLoggedIn: false, user: {} });
-        // window.location.href = "/admin";
-      }).catch(res => {
-        alert(res)
+        setState({ isLoggedIn: false, user: {} });
+      })
+      .catch((res) => {
+        alert(res);
       });
   };
 

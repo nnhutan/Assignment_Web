@@ -82,7 +82,7 @@ function Header({ clickHandler, currPage, currUser }) {
                         ? "nav-link dropdown-toggle active"
                         : "nav-link dropdown-toggle"
                     }
-                    href="#"
+                    href="!#"
                     id="navbarDropdown"
                     role="button"
                     data-bs-toggle="dropdown"

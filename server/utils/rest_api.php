@@ -16,8 +16,8 @@
 		header("Access-Control-Allow-Credentials: true");
 		header('Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS');
 		header("Access-Control-Request-Method: OPTIONS");
-		header('Access-Control-Allow-Headers: AccountKey,x-requested-with, Content-Type, origin, authorization, accept, client-security-token, host, date, cookie, cookie2');
-
+		header('Access-Control-Allow-Headers: AccountKey,x-requested-with, Content-Type, origin, authorization, accept, client-security-token, host, date, cookie, cookie2, Content-Disposition, Accept-Encoding, Content-Length');
+header("connection:keep-alive");
 
 		$this->method=$_SERVER['REQUEST_METHOD'];
 		$this->params=explode('/',trim($_SERVER['PATH_INFO'],'/'));

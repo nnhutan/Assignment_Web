@@ -28,7 +28,7 @@ function TableNews({
               <td>
                 <img
                   src={item.thumbnail}
-                  alt="image"
+                  alt="imagea"
                   style={{ maxWidth: "60px" }}
                 />
               </td>

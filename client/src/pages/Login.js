@@ -127,7 +127,7 @@ function Login() {
               <img
                 className="d-block mx-auto"
                 src={process.env.PUBLIC_URL + "./img/signin-image.jpg"}
-                alt="sing up image"
+                alt="singupimage"
               />
             </figure>
           </div>

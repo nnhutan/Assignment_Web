@@ -23,7 +23,7 @@ function TableProduct({ products, editHandler, deleteHandler, offset }) {
               <td>
                 <img
                   src={item.thumbnail}
-                  alt="image"
+                  alt="imagea"
                   style={{ width: "68px" }}
                 />
               </td>

@@ -4,11 +4,10 @@ import API from "../API/api";
 import { Link } from "react-router-dom";
 import logo from "../logo.png";
 
-function Header({ currPage, cart }) {
-  console.log(cart);
+function Header({ currPage }) {
   // I'm sorry, it's only now that I see my stupidity.
   // I should have used Context Switch or something to avoid code duplication
-  const [numProductInCart, setNumProductInCart] = useState(cart);
+  const [numProductInCart, setNumProductInCart] = useState();
   const authen = () => {
     axios
       .post(
@@ -21,7 +20,6 @@ function Header({ currPage, cart }) {
       )
       .then((res) => {
         getCart(true, res.data.id);
-        console.log(res.data);
       })
       .catch((res) => {
         getCart(false, "");
@@ -59,13 +57,24 @@ function Header({ currPage, cart }) {
           console.log(res);
         });
     } else {
-      console.log("use session");
+      axios
+        .post(
+          //API + `authentication.php`,
+          API + "cart.php/listCart",
+          {},
+          { withCredentials: true }
+        )
+        .then((res) => {
+          setNumProductInCart(res.data.length);
+        })
+        .catch((res) => {
+          console.log(res);
+        });
     }
   };
   useEffect(() => {
-    if (cart === undefined) {
-      authen();
-    } else setNumProductInCart(cart);
+    authen();
+
     window.addEventListener("scroll", function () {
       const mainNavbar = document.getElementById("main-navbar");
       if (mainNavbar !== null) {

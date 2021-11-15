@@ -1,5 +1,5 @@
 import React from "react";
-import background1 from "../img/laptops.jpg";
+// import background1 from "../img/laptops.jpg";
 import "./Intro.css";
 function IntroPage() {
   return (

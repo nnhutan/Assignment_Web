@@ -13,19 +13,17 @@ function Signup() {
   useEffect(() => {
     axios
       .post(
-        //API + `authentication.php`,
-        API+'autth.php/login',
+        API + "autth.php/login",
         {
           action: "login",
         },
         { withCredentials: true }
       )
       .then((res) => {
-        //if (res.data.status === 1)
-          setStatus(true);
-        // window.location.href = "/admin";
-      }).catch(res => {
-        console.log(res)
+        setStatus(true);
+      })
+      .catch((res) => {
+        console.log(res);
       });
   }, []);
 
@@ -42,26 +40,19 @@ function Signup() {
 
   const submitHandler = () => {
     axios
-      .post(
-        //API + `authentication.php`,
-        API +'autth.php/register',
-        {
+      .post(API + "autth.php/register", {
         action: "register",
         role_id: "1",
         ...user,
       })
       .then((res) => {
-        //if (res.data.status === 1)
-          alert(res.data)
         window.location.href = "/login";
-        //else alert(res.data.msg);
-      }).catch(res => {
-        alert(res)
+      })
+      .catch((res) => {
+        alert(res);
       });
-
-    
   };
-  
+
   if (status) return <Redirect to="/admin" />;
   return (
     <div
@@ -188,7 +179,7 @@ function Signup() {
               <img
                 className="d-block mx-auto"
                 src={process.env.PUBLIC_URL + "./img/signup-image.jpg"}
-                alt="sing up image"
+                alt="singupimage"
               />
             </figure>
           </div>

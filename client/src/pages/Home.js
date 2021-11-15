@@ -9,63 +9,6 @@ import Footer from "../components/Footer";
 import ServiceInfo from "../components/ServiceInfo";
 function Home() {
   const [products, setProducts] = useState([]);
-  const [cart, setCart] = useState([]);
-  const authen = () => {
-    axios
-      .post(
-        //API + `authentication.php`,
-        API + "autth.php/login",
-        {
-          action: "login",
-        },
-        { withCredentials: true }
-      )
-      .then((res) => {
-        getCart(true, res.data.id);
-        console.log(res.data);
-      })
-      .catch((res) => {
-        getCart(false, "");
-        console.log(res);
-      });
-  };
-
-  const [ordId, setOrdId] = useState("");
-  const getCart = async (flag, id) => {
-    if (flag) {
-      axios
-        .post(
-          //API + `authentication.php`,
-          API + "ord.php/listOrder"
-        )
-        .then((res) => {
-          const orderId =
-            res.data[res.data.findIndex((item) => item.user_id === id)].id;
-          setOrdId(orderId);
-          axios
-            .post(
-              //API + `authentication.php`,
-              API + "order-.php/listOrderDetail",
-              {
-                action: "list",
-                order_id: orderId,
-              }
-            )
-            .then((res) => {
-              setCart(res.data.length);
-            })
-            .catch((res) => {
-              console.log(res);
-            });
-        })
-        .catch((res) => {
-          console.log(res);
-        });
-    } else {
-      console.log("use session");
-    }
-  };
-
   const getProducts = async () => {
     axios
       .post(
@@ -82,25 +25,58 @@ function Home() {
       });
   };
 
-  useEffect(() => {
-    getProducts();
-    authen();
-  }, []);
+  const [ordId, setOrdId] = useState("");
 
-  const addToCart = (productId) => {
-    if (ordId !== "") {
+  const getCart = async (flag, id) => {
+    if (flag) {
       axios
         .post(
           //API + `authentication.php`,
-          API + "order-.php/addOrderDetail",
-          {
-            order_id: ordId,
-            product_id: productId,
-            num: 1,
-          }
+          API + "ord.php/listOrder"
         )
         .then((res) => {
-          if (res.data === "insert") setCart((prev) => prev + 1);
+          const orderId =
+            res.data[res.data.findIndex((item) => item.user_id === id)].id;
+          setOrdId(orderId);
+        })
+        .catch((res) => {
+          console.log(res);
+        });
+    } else {
+    }
+  };
+
+  // this state is only used to force page rerender
+  const [state, setState] = useState(true);
+  const addToCart = (productId) => {
+    if (ordId !== "") {
+      axios
+        .post(API + "order-.php/addOrderDetail", {
+          order_id: ordId,
+          product_id: productId,
+          num: 1,
+        })
+        .then((res) => {
+          setState((prev) => !prev);
+        })
+        .catch((res) => {
+          console.log(res);
+        });
+    } else {
+      axios
+        .post(
+          API + "cart.php/addToCart",
+          {
+            id: productId,
+            num: 1,
+          },
+          { withCredentials: true }
+        )
+        .then((res) => {
+          setState((prev) => {
+            prev = !state;
+            return prev;
+          });
         })
         .catch((res) => {
           console.log(res);
@@ -108,9 +84,33 @@ function Home() {
     }
   };
 
+  useEffect(() => {
+    const authen = () => {
+      axios
+        .post(
+          //API + `authentication.php`,
+          API + "autth.php/login",
+          {
+            action: "login",
+          },
+          { withCredentials: true }
+        )
+        .then((res) => {
+          getCart(true, res.data.id);
+        })
+        .catch((res) => {
+          getCart(false, "");
+          console.log(res);
+        });
+    };
+
+    getProducts();
+    authen();
+  }, []);
+
   return (
     <div className="home-page">
-      <Header currPage="home" cart={cart} />
+      <Header currPage="home" />
       <Slider />
       <TopSellingPoducts products={products} addToCart={addToCart} />
       <NewProducts products={products} addToCart={addToCart} />

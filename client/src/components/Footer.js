@@ -9,24 +9,24 @@ function Footer() {
           <div className="col-lg-3 col-md-6">
             <h5 className="h1 text-white">The Bell</h5>
             <p className="small text-muted">Công ty TNHH 4 thành viên</p>
-            <a className="text-primary" href="#">
+            <Link className="text-primary" to="/">
               Về trang chủ
-            </a>
+            </Link>
           </div>
           <div className="col-lg-2 col-md-6">
             <h5 className="text-white mb-3">Quick links</h5>
             <ul className="list-unstyled text-muted">
               <li>
-                <a href="#">Home</a>
+                <Link to="/">Home</Link>
               </li>
               <li>
-                <a href="#">About</a>
+                <Link to="/intro">About</Link>
               </li>
               <li>
-                <a href="#">Get started</a>
+                <Link to="/signup">Get started</Link>
               </li>
               <li>
-                <a href="#">FAQ</a>
+                <Link to="/cont">FAQ</Link>
               </li>
             </ul>
           </div>

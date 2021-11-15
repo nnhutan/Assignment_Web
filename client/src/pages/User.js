@@ -26,24 +26,15 @@ function User() {
   });
 
   useEffect(() => {
-    console.log("axios");
     axios
-      .post(
-        //API + `authentication.php`,
-        API+'autth.php/login',
-        {
-          action: "login",
-        },
-        { withCredentials: true }
-      )
+      .post(API + "autth.php/login", {}, { withCredentials: true })
       .then((res) => {
-        //if (res.data.status === 1) {
-          console.log(res.data)
-          setState({ isLoggedIn: true, user: res.data });
-          setUser({ ...res.data, password: "" });
+        setState({ isLoggedIn: true, user: res.data });
+        setUser({ ...res.data, password: "" });
         //}
-      }).catch(res => {
-        console.log(res)
+      })
+      .catch((res) => {
+        console.log(res);
       });
   }, []);
 
@@ -56,7 +47,7 @@ function User() {
     axios
       .post(
         //API + `authentication.php`,
-        API + 'autth.php/logout',
+        API + "autth.php/logout",
         {
           action: "logout",
         },
@@ -65,11 +56,12 @@ function User() {
       .then((res) => {
         alert(res.data);
         //if (res.data.status === 1) {
-          setState({ isLoggedIn: false, user: {} });
+        setState({ isLoggedIn: false, user: {} });
         //}
         // window.location.href = "/admin";
-      }).catch(res => {
-        alert(res)
+      })
+      .catch((res) => {
+        alert(res);
       });
   };
 
@@ -77,7 +69,7 @@ function User() {
     axios
       .post(
         //API + `authentication.php`,
-        API+'autth.php/editUser',
+        API + "autth.php/editUser",
         {
           action: "edit",
           ...user,
@@ -85,24 +77,17 @@ function User() {
         { withCredentials: true }
       )
       .then((res) => {
-        console.log(res.data);
-        //if (res.data.status !== 1) {
-          //alert(res.data.msg);
-        //} else {
-          setState((prev) => ({ ...prev, user: user }));
-          setUser((prev) => ({ ...prev, password: "" }));
-          document.getElementById("new-password").value = "";
-          document.getElementById("old-password").value = "";
-        //}
-        // console.log(user, state.user);
-      }).catch((res, status) => {
-        console.log(res,status)
+        setState((prev) => ({ ...prev, user: user }));
+        setUser((prev) => ({ ...prev, password: "" }));
+        document.getElementById("new-password").value = "";
+        document.getElementById("old-password").value = "";
+      })
+      .catch((res, status) => {
+        console.log(res, status);
       });
-
-    
   };
-  const closeHandler = (x) => {
-    switch (x) {
+  const closeHandler = (type) => {
+    switch (type) {
       case "1":
         break;
       case "2":
@@ -112,6 +97,8 @@ function User() {
         setUser((prev) => ({ ...prev, password: "" }));
         document.getElementById("new-password").value = "";
         document.getElementById("old-password").value = "";
+        break;
+      default:
         break;
     }
   };
@@ -231,7 +218,7 @@ function User() {
                   <img
                     className="d-block mx-auto"
                     src={process.env.PUBLIC_URL + "./img/signup-image.jpg"}
-                    alt="sing up image"
+                    alt="singupimage"
                   />
                 </figure>
               </div>

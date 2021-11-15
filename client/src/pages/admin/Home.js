@@ -1,12 +1,4 @@
-import React, { useEffect, useState } from "react";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  Redirect,
-} from "react-router-dom";
-import axios from "axios";
+import React from "react";
 import Header from "../../components/admin/Header";
 
 function Home({ clickHandler, currUser }) {

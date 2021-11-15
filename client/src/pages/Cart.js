@@ -8,25 +8,7 @@ import Footer from "../components/Footer";
 
 function Cart() {
   const [products, setProducts] = useState([]);
-  const authen = () => {
-    axios
-      .post(
-        //API + `authentication.php`,
-        API + "autth.php/login",
-        {
-          action: "login",
-        },
-        { withCredentials: true }
-      )
-      .then((res) => {
-        getCart(true, res.data.id);
-        console.log(res.data);
-      })
-      .catch((res) => {
-        getCart(false, "");
-        console.log(res);
-      });
-  };
+  const [status, setStatus] = useState(false);
 
   const getCart = async (flag, id) => {
     if (flag) {
@@ -59,57 +41,121 @@ function Cart() {
           console.log(res);
         });
     } else {
-      console.log("use session");
+      axios
+        .post(
+          //API + `authentication.php`,
+          API + "cart.php/listCart",
+          {},
+          { withCredentials: true }
+        )
+        .then((res) => {
+          setProducts(res.data);
+        })
+        .catch((res) => {
+          console.log(res);
+        });
     }
   };
   useEffect(() => {
+    const authen = () => {
+      axios
+        .post(
+          //API + `authentication.php`,
+          API + "autth.php/login",
+          {
+            action: "login",
+          },
+          { withCredentials: true }
+        )
+        .then((res) => {
+          getCart(true, res.data.id);
+          setStatus(true);
+        })
+        .catch((res) => {
+          getCart(false, "");
+          console.log(res);
+        });
+    };
     authen();
   }, []);
 
   const deleteHandler = (id) => {
-    axios
-      .post(
-        //API + `authentication.php`,
-        API + "order-.php/deleteOrderDetail",
-        {
-          id: id,
-        }
-      )
-      .then((res) => {
-        setProducts((prev) => prev.filter((item) => item.id !== id));
-        console.log(res.data);
-      })
-      .catch((res) => {
-        console.log(res);
-      });
+    if (status) {
+      axios
+        .post(
+          //API + `authentication.php`,
+          API + "order-.php/deleteOrderDetail",
+          {
+            id: id,
+          }
+        )
+        .then((res) => {
+          setProducts((prev) => prev.filter((item) => item.id !== id));
+        })
+        .catch((res) => {
+          console.log(res);
+        });
+    } else {
+      axios
+        .post(
+          //API + `authentication.php`,
+          API + "cart.php/updateCart",
+          { id: id, num: 0 },
+          { withCredentials: true }
+        )
+        .then((res) => {
+          setProducts((prev) => prev.filter((item) => item.id !== id));
+        })
+        .catch((res) => {
+          console.log(res);
+        });
+    }
   };
 
   const changeNumHandler = (e, index, id) => {
-    axios
-      .post(
-        //API + `authentication.php`,
-        API + "order-.php/editOrderDetail",
-        {
-          id: id,
-          num: e.target.value,
-        }
-      )
-      .then((res) => {
-        console.log(res.data);
-        setProducts((prev) => {
-          prev[index].num = e.target.value;
-          return [...prev];
+    if (status) {
+      axios
+        .post(
+          //API + `authentication.php`,
+          API + "order-.php/editOrderDetail",
+          {
+            id: id,
+            num: e.target.value,
+          }
+        )
+        .then((res) => {
+          setProducts((prev) => {
+            prev[index].num = e.target.value;
+            return [...prev];
+          });
+        })
+        .catch((res) => {
+          console.log(res);
         });
-      })
-      .catch((res) => {
-        console.log(res);
-      });
+    } else {
+      axios
+        .post(
+          //API + `authentication.php`,
+          API + "cart.php/updateCart",
+          { id: id, num: e.target.value },
+          { withCredentials: true }
+        )
+        .then((res) => {
+          setProducts((prev) => {
+            prev[index].num = e.target.value;
+            return [...prev];
+          });
+        })
+        .catch((res) => {
+          console.log(res);
+        });
+    }
   };
   const totalProductMoney = products.reduce((a, b) => a + b.price * b.num, 0);
   const vat = 0.1 * totalProductMoney;
   return (
     <div className="cart-page">
-      <Header currPage="cart" cart={products.length} />
+      <Header currPage="cart" />
       <div className="container">
         <h3 className="text-center my-3">Giỏ hàng</h3>
         <hr />
@@ -141,7 +187,7 @@ function Cart() {
                     <tr key={item.id}>
                       <th scope="row">{index + 1}</th>
                       <td>
-                        <a href="#" className="text-danger">
+                        <a href="!#" className="text-danger">
                           <i
                             className="bi bi-trash"
                             role="button"

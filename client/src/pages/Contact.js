@@ -1,8 +1,4 @@
 import Header from "../components/Header";
-import Slider from "../components/Slider";
-import TopHeader from "../components/TopHeader";
-import TopSellingPoducts from "../components/TopSellingPoducts";
-import NewProducts from "../components/NewProducts";
 
 function Contact() {
   return (
