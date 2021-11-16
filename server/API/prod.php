@@ -115,5 +115,20 @@
 			}
 			//echo json_encode($res);
 		}
+		function getProduct()
+		{
+			if (!empty($_POST)) {
+				$id =$this-> getPost('id');
+				$sql = "select Product.*, Category.name as category_name, Category.id as category_id from Product left join Category on Product.category_id = Category.id where product.id = $id";
+				$result = executeResult($sql, true);
+				$this->response(200,$result);
+			} else {
+				$res = [
+					"status" => 2,
+					"msg" => "failure!!!",
+				];
+				$this->response(404,"No entry");
+			}
+		}
 	}
 $newProduct=new product();

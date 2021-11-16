@@ -14,6 +14,7 @@ import {
   Signup,
   Admin,
   User,
+  ProductDetail,
 } from "./pages/index";
 import TopHeader from "./components/TopHeader";
 
@@ -64,6 +65,11 @@ function App() {
               <Route path="/admin">
                 <Admin />
               </Route>
+              <Route path="/product-detail/:id">
+                <TopHeader />
+                <ProductDetail />
+              </Route>
+
               <Route path="/">
                 <TopHeader />
                 <Home />

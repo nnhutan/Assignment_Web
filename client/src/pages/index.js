@@ -10,6 +10,7 @@ import Login from "./Login";
 import Signup from "./Signup";
 import Admin from "./admin/Admin";
 import User from "./User";
+import ProductDetail from "./ProductDetail";
 
 export {
   Home,
@@ -24,4 +25,5 @@ export {
   Signup,
   Admin,
   User,
+  ProductDetail,
 };

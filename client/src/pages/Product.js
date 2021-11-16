@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import API from "../API/api";
 import Header from "../components/Header";
+import Footer from "../components/Footer";
 import SidebarCategory from "../components/SidebarCategory";
 import ProductGrid from "../components/ProductGrid";
 
@@ -134,6 +135,7 @@ function Product() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

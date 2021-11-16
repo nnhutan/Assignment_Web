@@ -15,11 +15,7 @@ function Feedback({ clickHandler, currUser }) {
         { action: "list" }
       )
       .then((response) => {
-        //if (response.data.status === 1) {
-        setComments(response.data.commentList);
-        /*} else {
-        alert(response.data.msg);
-      }*/
+        setComments(response.data);
       })
       .catch((res) => {
         alert(res);

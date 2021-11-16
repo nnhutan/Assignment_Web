@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import Product from "./Product";
 
 function TopSellingPoducts({ products, addToCart }) {
@@ -11,7 +12,12 @@ function TopSellingPoducts({ products, addToCart }) {
             .filter((item) => item.category_name === "Xiaomi")
             .map((product, index) => (
               <div className="col-lg-3 col-md-6 col-sm-6 col-xs-12" key={index}>
-                <Product product={product} addToCart={addToCart} />
+                <Link
+                  to={"/product-detail/" + product.id}
+                  className="text-decoration-none"
+                >
+                  <Product product={product} addToCart={addToCart} />
+                </Link>
               </div>
             ))}
         </div>

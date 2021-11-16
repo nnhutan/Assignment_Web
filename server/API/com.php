@@ -8,24 +8,10 @@
 	class com extends rest_api{
 		protected function listComment()
 		{
-			$sql = "select comment.*, user.fullname, product.title from comment, user, product where comment.user_id = user.id and comment.product_id = product.id";
+			$sql = "select comment.*, user.id as user_id, user.fullname, product.title from comment, user, product where comment.user_id = user.id and comment.product_id = product.id";
 			$result = executeResult($sql);
-			if (!empty($result)) {
-				$res = [
-					"status" => 1,
-					"msg" => "success!!!",
-					"commentList" => $result,
-				];
-				$this->response(200,$res);
-			} else {
-				$res = [
-					"status" => 2,
-					"msg" => "failure!!! Have no comment",
-					"commentList" => [],
-				];
-				$this->response(404,"no comment");
-			}
-			//echo json_encode($res);
+			$this->response(200,$result);
+			
 		}
 
 		protected function addComment()
@@ -34,8 +20,9 @@
 				$userId =$this-> getPost("user_id");
 				$productID =$this-> getPost("product_id");
 				$content =$this-> getPost("content");
+				$created_at = $updated_at = date('Y-m-d H:s:i');
 
-				$sql = "insert into comment(user_id, product_id, content) values ('$userId','$productID', '$content')";
+				$sql = "insert into comment(user_id, product_id, content, created_at, updated_at) values ('$userId','$productID', '$content','$created_at', '$updated_at')";
 				execute($sql);
 
 				$res = [
@@ -58,8 +45,8 @@
 			if (!empty($_POST)) {
 				$id =$this-> getPost("id");
 				$content =$this-> getPost("content");
-
-				$sql = "update comment set content = '$content' where id = $id";
+				$updated_at = date('Y-m-d H:s:i');
+				$sql = "update comment set content = '$content', updated_at= '$updated_at' where id = $id";
 				execute($sql);
 
 				$res = [

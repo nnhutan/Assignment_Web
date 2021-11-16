@@ -1,5 +1,4 @@
 import React from "react";
-// import { Link } from "react-router-dom";
 import NumberFormat from "react-number-format";
 
 const style = {
@@ -22,7 +21,10 @@ function Product({ product, addToCart }) {
         }}
       />
       <div className="card-body text-center">
-        <h6 className="card-title d-block" style={{ minHeight: "38px" }}>
+        <h6
+          className="card-title d-block text-dark"
+          style={{ minHeight: "38px" }}
+        >
           {title}
         </h6>
         <p className="card-text text-danger fw-bold">
@@ -35,7 +37,11 @@ function Product({ product, addToCart }) {
         </p>
         <button
           className="btn btn-outline-primary"
-          onClick={() => addToCart(id)}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            addToCart(id);
+          }}
         >
           <i className="bi bi-cart-plus"></i> Thêm vào giỏ hàng
         </button>
