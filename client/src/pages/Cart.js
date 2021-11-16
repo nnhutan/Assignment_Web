@@ -187,13 +187,13 @@ function Cart() {
                     <tr key={item.id}>
                       <th scope="row">{index + 1}</th>
                       <td>
-                        <a href="!#" className="text-danger">
+                        <span className="text-danger">
                           <i
                             className="bi bi-trash"
                             role="button"
                             onClick={() => deleteHandler(item.id)}
                           ></i>
-                        </a>
+                        </span>
                       </td>
                       <td>
                         <img

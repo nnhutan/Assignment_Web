@@ -8,7 +8,7 @@
 	class product extends rest_api{
 		function listProduct()
 		{
-			$sql = 'select Product.*, Category.name as category_name from Product left join Category on Product.category_id = Category.id';
+			$sql = 'select Product.*, Category.name as category_name, Category.id as category_id from Product left join Category on Product.category_id = Category.id';
 			$result = executeResult($sql);
 			if (!empty($result)) {
 				$res = [

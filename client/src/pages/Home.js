@@ -26,23 +26,16 @@ function Home() {
   };
 
   const [ordId, setOrdId] = useState("");
-
   const getCart = async (flag, id) => {
     if (flag) {
       axios
-        .post(
-          //API + `authentication.php`,
-          API + "ord.php/listOrder"
-        )
+        .post(API + "ord.php/listOrder")
         .then((res) => {
           const orderId =
             res.data[res.data.findIndex((item) => item.user_id === id)].id;
           setOrdId(orderId);
         })
-        .catch((res) => {
-          console.log(res);
-        });
-    } else {
+        .catch((res) => console.log(res));
     }
   };
 
@@ -99,7 +92,6 @@ function Home() {
           getCart(true, res.data.id);
         })
         .catch((res) => {
-          getCart(false, "");
           console.log(res);
         });
     };
