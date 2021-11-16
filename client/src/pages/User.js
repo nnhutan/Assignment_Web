@@ -149,7 +149,7 @@ function User() {
           >
             <i className="bi bi-box-arrow-in-right"></i>
           </button>
-          <div className="signup-content row py-0 g-0 ps-lg-5 pe-lg-4 justify-content-center">
+          <div className="signup-content row py-0 g-0 ps-lg-4 pe-lg-4 justify-content-center">
             <div className="row g-0 gx-md-2">
               <div className="col-lg-4 col-md-5 col-12">
                 <div className="card" style={{ borderRadius: "4px" }}>
