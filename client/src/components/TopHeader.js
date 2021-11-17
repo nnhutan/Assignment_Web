@@ -1,62 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
-import API from "../API/api";
+import { Data } from "../Context";
 
 function TopHeader() {
+  const { state, publicContact, logoutHandler } = useContext(Data);
   const clickHandler = () => {
-    axios
-      .post(
-        API + "autth.php/logout",
-        {
-          action: "logout",
-        },
-        { withCredentials: true }
-      )
-      .then((res) => {
-        setState({ isLoggedIn: false, user: {} });
-        window.location.href = "/";
-      })
-      .catch((res) => {
-        alert(res);
-      });
+    logoutHandler();
   };
-  const [state, setState] = useState({
-    isLoggedIn: false,
-    user: {},
-  });
-  const [contacts, setContacts] = useState([]);
 
-  useEffect(() => {
-    async function authen() {
-      axios
-        .post(
-          API + "autth.php/login",
-          {
-            action: "login",
-          },
-          { withCredentials: true }
-        )
-        .then((res) => {
-          //if (res.data.status === 1)
-          setState({ isLoggedIn: true, user: res.data });
-        })
-        .catch((res) => {
-          console.log(res);
-        });
-      axios
-        .post(API + "cont.php/listContact", {
-          action: "list",
-        })
-        .then((res) => {
-          if (res.data.status === 1) setContacts(res.data.contactList);
-        })
-        .catch((res) => {
-          alert(res);
-        });
-    }
-    authen();
-  }, []);
+  if (
+    publicContact === undefined ||
+    state === undefined ||
+    logoutHandler === undefined
+  )
+    return (
+      <div className="spinner-border text-primary" role="status">
+        <span className="visually-hidden">Loading...</span>
+      </div>
+    );
   return (
     <div className="bg-white js-top-header">
       <div
@@ -69,13 +30,13 @@ function TopHeader() {
         >
           <p className="my-0 me-3">
             <i className="bi bi-telephone-fill"></i>{" "}
-            {contacts.length !== 0 &&
-              contacts[0].type + ": " + contacts[0].content}
+            {publicContact.length !== 0 &&
+              publicContact[0].type + ": " + publicContact[0].content}
           </p>
           <p className="my-0">
             <i className="bi bi-envelope-fill"></i>{" "}
-            {contacts.length !== 0 &&
-              contacts[1].type + ": " + contacts[1].content}
+            {publicContact.length !== 0 &&
+              publicContact[1].type + ": " + publicContact[1].content}
           </p>
         </div>
         <div className="d-flex align-items-center">

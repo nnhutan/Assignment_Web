@@ -12,7 +12,9 @@ function SidebarCategory({ categories, setProductDisplayed }) {
       <div className="list-group">
         <div className="list-group-item  px-1 d-flex align-items-center">
           <i className="bi bi-list-ul fs-4 me-2"></i>
-          <h6 className="mb-0">Danh mục sản phẩm</h6>
+          <h5 className="mb-0 text-uppercase font-monospace fw-bold">
+            Danh mục
+          </h5>
         </div>
         <span
           role="button"

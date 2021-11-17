@@ -1,53 +1,23 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import API from "../../API/api";
+import React, { useState, useContext } from "react";
 import Header from "../../components/admin/Header";
 import TableCustomerContact from "../../components/admin/TableCustomerContact";
 import Pagination from "../../components/Pagination";
+import { Data } from "../../Context";
 
-function Contact({ clickHandler, currUser }) {
+function Contact() {
+  const {
+    publicContact,
+    customerContact,
+    addPublicContact,
+    editPublicContact,
+    deletePublicContact,
+    deleteCustomerContact,
+  } = useContext(Data);
   const [status, setStatus] = useState({
     id: "",
     action: "Thêm",
   });
   const [contact, setContact] = useState({ type: "", content: "" });
-  const [contacts, setContacts] = useState([]);
-  const [customerContact, setCustomerContact] = useState([]);
-
-  const getData = () => {
-    axios
-      .post(
-        //API + "contact-public.php",
-        API + "cont.php/listContact",
-        { action: "list" }
-      )
-      .then((response) => {
-        if (response.data.status === 1) setContacts(response.data.contactList);
-        else alert(response.data.msg);
-      })
-      .catch((res) => {
-        alert(res);
-      });
-
-    axios
-      .post(
-        //API + "customer-contact.php",
-        API + "cust.php/listCustomerContact",
-        { action: "list" }
-      )
-      .then((response) => {
-        if (response.data.status === 1)
-          setCustomerContact(response.data.customer_contactList);
-        else alert(response.data.msg);
-      })
-      .catch((res) => {
-        alert(res);
-      });
-  };
-
-  useEffect(() => {
-    getData();
-  }, []);
 
   const closeHandler = () => {
     setContact({ type: "", content: "" });
@@ -59,65 +29,24 @@ function Contact({ clickHandler, currUser }) {
 
   const submitHandler = () => {
     if (status.action === "Thêm") {
-      axios
-        .post(
-          //API + "contact-public.php",
-          API + "cont.php/addContact",
-          { action: "add", ...contact }
-        )
-        .then((response) => {
-          if (response.data.status === 2) alert(response.data.msg);
-          else getData();
-          setContact({ type: "", content: "" });
-        })
-        .catch((res) => {
-          alert(res);
-        });
+      addPublicContact(contact);
     } else {
-      axios
-        .post(API + "cont.php/editContact", {
-          action: "edit",
-          id: status.id,
-          ...contact,
-        })
-        .then((response) => {
-          if (response.data.status === 2) alert(response.data.msg);
-          else {
-            setContacts((prev) => {
-              prev[prev.findIndex((item) => item.id === status.id)] = contact;
-              return prev;
-            });
-          }
-          setContact({ type: "", content: "" });
-          setStatus({
-            id: "",
-            action: "Thêm",
-          });
-        })
-        .catch((res) => {
-          alert(res);
-        });
+      editPublicContact(status.id, contact);
     }
+    setContact({ type: "", content: "" });
+    setStatus({
+      id: "",
+      action: "Thêm",
+    });
   };
 
-  const deleteHandler = (id) => {
+  const deleteHandler = (id, isCustomerContact = "false") => {
     var option = window.confirm(
       "Bạn có chắc chắn muốn xoá thông tin liên hệ này không?"
     );
     if (option) {
-      axios
-        .post(
-          //API + "contact-public.php",
-          API + "cont.php/deleteContact",
-          { action: "delete", id: id }
-        )
-        .then((response) => {
-          if (response.data.status === 2) alert(response.data.msg);
-          else setContacts((prev) => prev.filter((item) => item.id !== id));
-        })
-        .catch((res) => {
-          alert(res);
-        });
+      if (isCustomerContact) deleteCustomerContact(id);
+      else deletePublicContact(id);
     }
   };
 
@@ -141,11 +70,7 @@ function Contact({ clickHandler, currUser }) {
 
   return (
     <div className="container-fluid p-0">
-      <Header
-        clickHandler={clickHandler}
-        currPage="contact"
-        currUser={currUser}
-      />
+      <Header currPage="contact" />
       <div className="container-fluid">
         <h2 className="text-center my-4">
           Quản lý các thông tin liên hệ của công ty
@@ -252,7 +177,7 @@ function Contact({ clickHandler, currUser }) {
               </tr>
             </thead>
             <tbody>
-              {contacts.map((item, index) => {
+              {publicContact.map((item, index) => {
                 return (
                   <tr key={index}>
                     <td>{index + 1}</td>

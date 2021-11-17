@@ -1,41 +1,21 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import API from "../API/api";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import React, { useContext } from "react";
 import { CSVLink } from "react-csv";
 import { Link } from "react-router-dom";
+import { Data } from "../Context";
 
 function Price() {
-  const [products, setProducts] = useState([]);
-  useEffect(() => {
-    axios
-      .post(
-        //API + "product.php",
-        API + "prod.php/listProduct",
-        { action: "list" }
-      )
-      .then((response) => {
-        var data = response.data.productList;
-        data = data.map((item, index) => {
-          return {
-            id: index,
-            name: item.title,
-            price: item.price,
-            updated_at: item.updated_at,
-          };
-        });
-        if (response.data.status === 1) setProducts(data);
-        else alert(response.data.msg);
-      })
-      .catch((res) => {
-        alert(res);
-      });
-  }, []);
+  const DataGlobal = useContext(Data);
+  const products = DataGlobal.products.map((item, index) => {
+    return {
+      id: index,
+      name: item.title,
+      price: item.price,
+      updated_at: item.updated_at,
+    };
+  });
 
   return (
     <div className="price-page">
-      <Header currPage="price" />
       <div className="container">
         <div className="slider py-5">
           <div className="row">
@@ -142,7 +122,6 @@ function Price() {
           </div>
         </div>
       </div>
-      <Footer />
     </div>
   );
 }

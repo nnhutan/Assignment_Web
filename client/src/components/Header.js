@@ -1,80 +1,14 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import API from "../API/api";
+import React, { useEffect, useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../logo.png";
+import { Data } from "../Context";
 
-function Header({ currPage }) {
-  // I'm sorry, it's only now that I see my stupidity.
-  // I should have used Context Switch or something to avoid code duplication
-  const [numProductInCart, setNumProductInCart] = useState();
-  const authen = () => {
-    axios
-      .post(
-        //API + `authentication.php`,
-        API + "autth.php/login",
-        {
-          action: "login",
-        },
-        { withCredentials: true }
-      )
-      .then((res) => {
-        getCart(true, res.data.id);
-      })
-      .catch((res) => {
-        getCart(false, "");
-        console.log(res);
-      });
-  };
+function Header() {
+  const DataGlobal = useContext(Data);
+  const { numProductInCart } = DataGlobal;
+  const [currPage, setCurrage] = useState("home");
 
-  const getCart = async (flag, id) => {
-    if (flag) {
-      axios
-        .post(
-          //API + `authentication.php`,
-          API + "ord.php/listOrder"
-        )
-        .then((res) => {
-          const orderId =
-            res.data[res.data.findIndex((item) => item.user_id === id)].id;
-          axios
-            .post(
-              //API + `authentication.php`,
-              API + "order-.php/listOrderDetail",
-              {
-                action: "list",
-                order_id: orderId,
-              }
-            )
-            .then((res) => {
-              setNumProductInCart(res.data.length);
-            })
-            .catch((res) => {
-              console.log(res);
-            });
-        })
-        .catch((res) => {
-          console.log(res);
-        });
-    } else {
-      axios
-        .post(
-          //API + `authentication.php`,
-          API + "cart.php/listCart",
-          {},
-          { withCredentials: true }
-        )
-        .then((res) => {
-          setNumProductInCart(res.data.length);
-        })
-        .catch((res) => {
-          console.log(res);
-        });
-    }
-  };
   useEffect(() => {
-    authen();
-
     window.addEventListener("scroll", function () {
       const mainNavbar = document.getElementById("main-navbar");
       if (mainNavbar !== null) {
@@ -82,19 +16,18 @@ function Header({ currPage }) {
           document.querySelector(".js-top-header").offsetHeight;
         if (window.scrollY >= topHeader_height) {
           mainNavbar.classList.add("fixed-top");
-          // add padding top to show content behind navbar
           const navbar_height = document.querySelector(
             ".main-navbar__navbar"
           ).offsetHeight;
           document.body.style.paddingTop = navbar_height + "px";
         } else {
           mainNavbar.classList.remove("fixed-top");
-          // remove padding top from body
           document.body.style.paddingTop = "0";
         }
       }
     });
   });
+
   return (
     <div className="bg-light main-navbar__navbar" id="main-navbar">
       <div className="container">
@@ -125,6 +58,7 @@ function Header({ currPage }) {
                   }
                   aria-current="page"
                   to="/"
+                  onClick={() => setCurrage("home")}
                 >
                   Trang chủ
                 </Link>
@@ -133,6 +67,7 @@ function Header({ currPage }) {
                   className={
                     currPage === "intro" ? "nav-link active" : "nav-link"
                   }
+                  onClick={() => setCurrage("intro")}
                 >
                   Giới thiệu
                 </Link>
@@ -141,6 +76,7 @@ function Header({ currPage }) {
                     currPage === "product" ? "nav-link active" : "nav-link"
                   }
                   to="/product"
+                  onClick={() => setCurrage("product")}
                 >
                   Sản phẩm
                 </Link>
@@ -149,6 +85,7 @@ function Header({ currPage }) {
                     currPage === "price" ? "nav-link active" : "nav-link"
                   }
                   to="/price"
+                  onClick={() => setCurrage("price")}
                 >
                   Bảng giá
                 </Link>
@@ -157,6 +94,7 @@ function Header({ currPage }) {
                     currPage === "contact" ? "nav-link active" : "nav-link"
                   }
                   to="/contact"
+                  onClick={() => setCurrage("contact")}
                 >
                   Liên hệ
                 </Link>
@@ -165,12 +103,13 @@ function Header({ currPage }) {
                     currPage === "news" ? "nav-link active" : "nav-link"
                   }
                   to="/news"
+                  onClick={() => setCurrage("news")}
                 >
                   Tin tức
                 </Link>
               </div>
               <div className="d-flex justify-content-between">
-                <form className="d-flex">
+                <div className="d-flex">
                   <div className="input-group input-group-sm">
                     <input
                       className="form-control bg-white border-0 rounded-pill rounded-end shadow-none"
@@ -180,12 +119,12 @@ function Header({ currPage }) {
                     />
                     <button
                       className="input-group-text bg-white border-0 rounded-pill rounded-start"
-                      type="submit"
+                      // type="submit"
                     >
                       <i className="bi bi-search"></i>
                     </button>
                   </div>
-                </form>
+                </div>
                 <Link to="/cart">
                   <button
                     className={
@@ -193,6 +132,7 @@ function Header({ currPage }) {
                         ? "btn btn-outline-primary rounded-circle position-relative ms-4 active"
                         : "btn btn-outline-primary rounded-circle position-relative ms-4"
                     }
+                    onClick={() => setCurrage("cart")}
                   >
                     <i className="bi bi-cart"></i>
                     <span className="position-absolute top-1 start-100 translate-middle bg-danger border border-light rounded-circle text-white px-2">

@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
+import { Data } from "../../Context";
 
-function Header({ clickHandler, currPage, currUser }) {
+function Header({ currPage }) {
+  const { state, logoutHandler } = useContext(Data);
+  const currUser = state.user;
   return (
     <div className="bg-dark">
       <div className="container-fluid">
@@ -80,7 +83,7 @@ function Header({ clickHandler, currPage, currUser }) {
                     className={
                       currPage === "feedback" ||
                       currPage === "contact" ||
-                      currPage === "news"
+                      currPage === "order"
                         ? "nav-link dropdown-toggle active"
                         : "nav-link dropdown-toggle"
                     }
@@ -158,7 +161,7 @@ function Header({ clickHandler, currPage, currUser }) {
                 </li>
               </div>
               <div className="d-flex justify-content-between">
-                <form className="d-flex">
+                <div className="d-flex">
                   <div className="input-group">
                     <input
                       className="form-control form-control-sm bg-light border-0 rounded-pill rounded-end shadow-none"
@@ -168,12 +171,12 @@ function Header({ clickHandler, currPage, currUser }) {
                     />
                     <button
                       className="input-group-text bg-light border-0 rounded-pill rounded-start"
-                      type="submit"
+                      // type="submit"
                     >
                       <i className="bi bi-search"></i>
                     </button>
                   </div>
-                </form>
+                </div>
 
                 <div className="d-flex ms-3">
                   <div>
@@ -191,7 +194,7 @@ function Header({ clickHandler, currPage, currUser }) {
 
                 <button
                   className="btn btn-outline-warning ms-4"
-                  onClick={clickHandler}
+                  onClick={logoutHandler}
                 >
                   <i className="bi bi-box-arrow-right"></i>
                 </button>

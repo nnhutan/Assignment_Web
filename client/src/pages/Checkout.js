@@ -1,87 +1,32 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import API from "../API/api";
+import React, { useContext } from "react";
 import NumberFormat from "react-number-format";
-import Header from "../components/Header";
 import { Link } from "react-router-dom";
-import Footer from "../components/Footer";
+import { Data } from "../Context";
 
 function Checkout() {
-  const [products, setProducts] = useState([]);
+  const DataGlobal = useContext(Data);
+  const { productsInCart } = DataGlobal;
 
-  const getCart = async (flag, id) => {
-    if (flag) {
-      axios
-        .post(
-          //API + `authentication.php`,
-          API + "ord.php/listOrder"
-        )
-        .then((res) => {
-          const orderId =
-            res.data[res.data.findIndex((item) => item.user_id === id)].id;
-
-          axios
-            .post(
-              //API + `authentication.php`,
-              API + "order-.php/listOrderDetail",
-              {
-                action: "list",
-                order_id: orderId,
-              }
-            )
-            .then((res) => {
-              setProducts(res.data);
-            })
-            .catch((res) => {
-              console.log(res);
-            });
-        })
-        .catch((res) => {
-          console.log(res);
-        });
-    } else {
-      axios
-        .post(
-          //API + `authentication.php`,
-          API + "cart.php/listCart",
-          {},
-          { withCredentials: true }
-        )
-        .then((res) => {
-          setProducts(res.data);
-        })
-        .catch((res) => {
-          console.log(res);
-        });
-    }
-  };
-  useEffect(() => {
-    const authen = () => {
-      axios
-        .post(
-          //API + `authentication.php`,
-          API + "autth.php/login",
-          {
-            action: "login",
-          },
-          { withCredentials: true }
-        )
-        .then((res) => {
-          getCart(true, res.data.id);
-        })
-        .catch((res) => {
-          getCart(false, "");
-          console.log(res);
-        });
-    };
-    authen();
-  }, []);
-  const totalProductMoney = products.reduce((a, b) => a + b.price * b.num, 0);
+  const totalProductMoney = productsInCart.reduce(
+    (a, b) => a + b.price * b.num,
+    0
+  );
   const vat = 0.1 * totalProductMoney;
   return (
     <div className="checkout-page">
-      <Header currPage="checkout" />
-      <div className="container mb-4">
+      <div className="container mb-4" style={{ position: "relative" }}>
+        <Link
+          to="/cart"
+          style={{
+            position: "absolute",
+            top: "8px",
+            left: "12px",
+          }}
+        >
+          <button className="btn btn-outline-success btn-sm">
+            <i class="bi bi-arrow-90deg-left"></i> Quay lại
+          </button>
+        </Link>
         <h3 className="text-center mt-3">Thông tin đơn hàng</h3>
         <hr />
         <div className="row g-2">
@@ -142,7 +87,7 @@ function Checkout() {
                 <div className="table-responsive">
                   <table className="table-hover table-borderless">
                     <tbody>
-                      {products.map((item) => (
+                      {productsInCart.map((item) => (
                         <tr key={item.id}>
                           <td
                             style={{ maxWidth: "300px" }}
@@ -249,7 +194,6 @@ function Checkout() {
           </div>
         </div>
       </div>
-      <Footer />
       <div
         className="modal fade"
         id="staticBackdrop"

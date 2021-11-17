@@ -1,161 +1,26 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import API from "../API/api";
-import Header from "../components/Header";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import NumberFormat from "react-number-format";
-import Footer from "../components/Footer";
+import { Data } from "../Context";
 
 function Cart() {
-  const [products, setProducts] = useState([]);
-  const [status, setStatus] = useState(false);
-
-  const getCart = async (flag, id) => {
-    if (flag) {
-      axios
-        .post(
-          //API + `authentication.php`,
-          API + "ord.php/listOrder"
-        )
-        .then((res) => {
-          const orderId =
-            res.data[res.data.findIndex((item) => item.user_id === id)].id;
-
-          axios
-            .post(
-              //API + `authentication.php`,
-              API + "order-.php/listOrderDetail",
-              {
-                action: "list",
-                order_id: orderId,
-              }
-            )
-            .then((res) => {
-              setProducts(res.data);
-            })
-            .catch((res) => {
-              console.log(res);
-            });
-        })
-        .catch((res) => {
-          console.log(res);
-        });
-    } else {
-      axios
-        .post(
-          //API + `authentication.php`,
-          API + "cart.php/listCart",
-          {},
-          { withCredentials: true }
-        )
-        .then((res) => {
-          setProducts(res.data);
-        })
-        .catch((res) => {
-          console.log(res);
-        });
-    }
-  };
-  useEffect(() => {
-    const authen = () => {
-      axios
-        .post(
-          //API + `authentication.php`,
-          API + "autth.php/login",
-          {
-            action: "login",
-          },
-          { withCredentials: true }
-        )
-        .then((res) => {
-          getCart(true, res.data.id);
-          setStatus(true);
-        })
-        .catch((res) => {
-          getCart(false, "");
-          console.log(res);
-        });
-    };
-    authen();
-  }, []);
-
+  const DataGlobal = useContext(Data);
+  const { productsInCart, deleteProductInCart, changeNumOfProductInCart } =
+    DataGlobal;
   const deleteHandler = (id) => {
-    if (status) {
-      axios
-        .post(
-          //API + `authentication.php`,
-          API + "order-.php/deleteOrderDetail",
-          {
-            id: id,
-          }
-        )
-        .then((res) => {
-          setProducts((prev) => prev.filter((item) => item.id !== id));
-        })
-        .catch((res) => {
-          console.log(res);
-        });
-    } else {
-      axios
-        .post(
-          //API + `authentication.php`,
-          API + "cart.php/updateCart",
-          { id: id, num: 0 },
-          { withCredentials: true }
-        )
-        .then((res) => {
-          setProducts((prev) => prev.filter((item) => item.id !== id));
-        })
-        .catch((res) => {
-          console.log(res);
-        });
-    }
+    deleteProductInCart(id);
   };
 
   const changeNumHandler = (e, index, id) => {
-    if (status) {
-      axios
-        .post(
-          //API + `authentication.php`,
-          API + "order-.php/editOrderDetail",
-          {
-            id: id,
-            num: e.target.value,
-          }
-        )
-        .then((res) => {
-          setProducts((prev) => {
-            prev[index].num = e.target.value;
-            return [...prev];
-          });
-        })
-        .catch((res) => {
-          console.log(res);
-        });
-    } else {
-      axios
-        .post(
-          //API + `authentication.php`,
-          API + "cart.php/updateCart",
-          { id: id, num: e.target.value },
-          { withCredentials: true }
-        )
-        .then((res) => {
-          setProducts((prev) => {
-            prev[index].num = e.target.value;
-            return [...prev];
-          });
-        })
-        .catch((res) => {
-          console.log(res);
-        });
-    }
+    changeNumOfProductInCart(e, index, id);
   };
-  const totalProductMoney = products.reduce((a, b) => a + b.price * b.num, 0);
+  const totalProductMoney = productsInCart.reduce(
+    (a, b) => a + b.price * b.num,
+    0
+  );
   const vat = 0.1 * totalProductMoney;
   return (
     <div className="cart-page">
-      <Header currPage="cart" />
       <div className="container">
         <h3 className="text-center my-3">Giỏ hàng</h3>
         <hr />
@@ -183,7 +48,7 @@ function Cart() {
                   </tr>
                 </thead>
                 <tbody>
-                  {products.map((item, index) => (
+                  {productsInCart.map((item, index) => (
                     <tr key={item.id}>
                       <th scope="row">{index + 1}</th>
                       <td>
@@ -349,9 +214,6 @@ function Cart() {
           </div>
           <hr />
           <div className="cart-footer d-flex justify-content-end mb-3">
-            <Link to="/product" className="btn btn-info my-1 me-2">
-              <i className="bi bi-file-earmark-plus me-2"></i>Update Cart
-            </Link>
             <Link to="/checkout" className="btn btn-success my-1">
               Proceed to Checkout
               <i className="bi bi-arrow-right ms-2"></i>
@@ -359,7 +221,6 @@ function Cart() {
           </div>
         </div>
       </div>
-      <Footer />
     </div>
   );
 }

@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import Product from "./Product";
+import { Data } from "../Context";
 
-function TopSellingPoducts({ products, addToCart }) {
+function NewProducts() {
+  const DataGlobal = useContext(Data);
+  const { products, addToCart } = DataGlobal;
   return (
     <div className="top-selling bg-light pb-5">
       <h3 className="text-center py-4">Sản phẩm mới</h3>
@@ -26,4 +29,4 @@ function TopSellingPoducts({ products, addToCart }) {
   );
 }
 
-export default TopSellingPoducts;
+export default NewProducts;

@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import NumberFormat from "react-number-format";
+import { Data } from "../Context";
 
 const style = {
   transition: "all 0.2s ease-in-out",
 };
 
-function Product({ product, addToCart }) {
+function Product({ product }) {
+  const DataGlobal = useContext(Data);
+  const { addToCart } = DataGlobal;
   const { id, title, price, thumbnail } = product;
   return (
     <div role="button" className="card product-card" style={style}>

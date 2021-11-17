@@ -8,7 +8,7 @@
 	class com extends rest_api{
 		protected function listComment()
 		{
-			$sql = "select comment.*, user.id as user_id, user.fullname, product.title from comment, user, product where comment.user_id = user.id and comment.product_id = product.id";
+			$sql = "select comment.*, user.id as user_id, user.fullname, product.title from comment, user, product where comment.user_id = user.id and comment.product_id = product.id order by updated_at DESC";
 			$result = executeResult($sql);
 			$this->response(200,$result);
 			

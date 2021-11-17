@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import CardComment from "./CardComment";
+import Pagination from "../components/Pagination";
 
 function Comment({ comments, addComment, deleteComment, editComment, user }) {
   const [commentEdit, setCommentEdit] = useState({
@@ -10,6 +11,14 @@ function Comment({ comments, addComment, deleteComment, editComment, user }) {
   const changeHandler = (e) => {
     setContent(e.target.value);
   };
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemPerPage = 8;
+  const numberPage = Math.ceil(comments.length / itemPerPage);
+  const currDisplay = comments.slice(
+    (currentPage - 1) * itemPerPage,
+    currentPage * itemPerPage
+  );
 
   return (
     <div className="container py-4">
@@ -58,7 +67,7 @@ function Comment({ comments, addComment, deleteComment, editComment, user }) {
         )}
       </div>
       <hr />
-      {comments.map((item) => (
+      {currDisplay.map((item) => (
         <CardComment
           comment={item}
           key={item.id}
@@ -67,12 +76,19 @@ function Comment({ comments, addComment, deleteComment, editComment, user }) {
           setCommentEdit={setCommentEdit}
         />
       ))}
+      {numberPage > 1 ? (
+        <Pagination
+          numberPage={numberPage}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+        />
+      ) : null}
       <div
         className="modal fade"
         id="staticBackdrop"
         data-bs-backdrop="static"
         data-bs-keyboard="false"
-        tabindex="-1"
+        tabIndex="-1"
         aria-labelledby="staticBackdropLabel"
         aria-hidden="true"
       >

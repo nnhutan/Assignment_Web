@@ -1,44 +1,14 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import API from "../../API/api";
+import React, { useContext, useState } from "react";
 import Header from "../../components/admin/Header";
 import TableComment from "../../components/admin/TableComment";
 import Pagination from "../../components/Pagination";
+import { Data } from "../../Context";
 
-function Feedback({ clickHandler, currUser }) {
-  const [comments, setComments] = useState([]);
-  useEffect(() => {
-    axios
-      .post(
-        //API + "comment.php",
-        API + "com.php/listComment",
-        { action: "list" }
-      )
-      .then((response) => {
-        setComments(response.data);
-      })
-      .catch((res) => {
-        alert(res);
-      });
-  }, []);
+function Feedback() {
+  const { comments, deleteComment } = useContext(Data);
 
   const deleteHandler = (id) => {
-    axios
-      .post(
-        //API + "comment.php",
-        API + "com.php/deleteComment",
-        { action: "delete", id: id }
-      )
-      .then((response) => {
-        //if (response.data.status === 1) {
-        setComments((prev) => prev.filter((item) => item.id !== id));
-        /*} else {
-          alert(response.data.msg);
-        }*/
-      })
-      .catch((res) => {
-        alert(res);
-      });
+    deleteComment(id);
   };
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -52,11 +22,7 @@ function Feedback({ clickHandler, currUser }) {
 
   return (
     <div className="container-fluid p-0">
-      <Header
-        clickHandler={clickHandler}
-        currPage="feedback"
-        currUser={currUser}
-      />
+      <Header currPage="feedback" />
       <div className="container">
         <h2 className="text-center my-4">Quản lý phản hồi, bình luận</h2>
 

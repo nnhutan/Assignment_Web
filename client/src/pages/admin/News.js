@@ -1,36 +1,18 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import API from "../../API/api";
+import React, { useState, useContext } from "react";
 import Header from "../../components/admin/Header";
 import SunEditor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
 import TableNews from "../../components/admin/TableNews";
 import Pagination from "../../components/Pagination";
+import { Data } from "../../Context";
 
-function News({ clickHandler, currUser }) {
+function News() {
+  const { newsList, addNews, editNews, deleteNews } = useContext(Data);
   const [status, setStatus] = useState({
     id: "",
     action: "Thêm",
   });
   const [news, setNews] = useState({ title: "", thumbnail: "", content: "" });
-  const [newsList, setNewsList] = useState([]);
-
-  const getData = () => {
-    axios.post(
-      //API + "news.php",
-      API+'newa.php/listNews',
-      { action: "list" })
-      .then((response) => {
-      if (response.data.status === 1) setNewsList(response.data.newsList);
-      else alert(response.data.msg);
-      }).catch(res => {
-        alert(res)
-      });
-  };
-
-  useEffect(() => {
-    getData();
-  }, []);
 
   const closeHandler = () => {
     setNews({ title: "", thumbnail: "", content: "" });
@@ -42,61 +24,20 @@ function News({ clickHandler, currUser }) {
 
   const submitHandler = () => {
     if (status.action === "Thêm") {
-      axios
-        .post(
-          //API + "news.php",
-          API +'newa.php/addNews',
-          { action: "add", ...news })
-        .then((response) => {
-          if (response.data.status === 2) alert(response.data.msg);
-          else getData();
-          setNews({ title: "", thumbnail: "", content: "" });
-        }).catch(res => {
-          alert(res)
-        });
+      addNews(news);
     } else {
-      axios
-        .post(
-          //API + "news.php",
-          API+'newa.php/editNews',
-          {
-          action: "edit",
-          id: status.id,
-          ...news,
-        })
-        .then((response) => {
-          if (response.data.status === 2) alert(response.data.msg);
-          else {
-            setNewsList((prev) => {
-              prev[prev.findIndex((item) => item.id === status.id)] = news;
-              return prev;
-            });
-          }
-          setNews({ title: "", thumbnail: "", content: "" });
-          setStatus({
-            id: "",
-            action: "Thêm",
-          });
-        });
+      editNews(status.id, news);
     }
+    setNews({ title: "", thumbnail: "", content: "" });
+    setStatus({
+      id: "",
+      action: "Thêm",
+    });
   };
-
   const deleteHandler = (id) => {
-    var option = window.confirm(
-      "Bạn có chắc chắn muốn xoá thông tin liên hệ này không?"
-    );
+    var option = window.confirm("Bạn có chắc chắn muốn xoá tin tức này không?");
     if (option) {
-      axios
-        .post(
-          //API + "news.php",
-          API+'newa.php/deleteNews',
-          { action: "delete", id: id })
-        .then((response) => {
-          if (response.data.status === 2) alert(response.data.msg);
-          else setNewsList((prev) => prev.filter((item) => item.id !== id));
-        }).catch(res => {
-          alert(res)
-        });
+      deleteNews(id);
     }
   };
 
@@ -126,7 +67,7 @@ function News({ clickHandler, currUser }) {
 
   return (
     <div className="container-fluid p-0">
-      <Header clickHandler={clickHandler} currPage="news" currUser={currUser} />
+      <Header currPage="news" />
       <div className="container-fluid">
         <h2 className="text-center my-4">Quản lý tin tức</h2>
         <div className="container">

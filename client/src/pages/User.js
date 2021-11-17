@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Link, Redirect } from "react-router-dom";
-import axios from "axios";
-import API from "../API/api";
+import { Data } from "../Context";
 var md5 = require("md5");
 
 const styleSignup = {
@@ -10,34 +9,15 @@ const styleSignup = {
 };
 
 function User() {
-  const [state, setState] = useState({
-    isLoggedIn: false,
-    isLoading: true,
-    user: {},
-  });
-
-  const [user, setUser] = useState({
-    id: "",
-    fullname: "",
-    email: "",
-    phone_number: "",
-    address: "",
-    password: "",
-    role_id: "",
-  });
+  const DataGlobal = useContext(Data);
+  const { state, logoutHandler, editUser } = DataGlobal;
+  const [user, setUser] = useState(state.user);
+  const [status, setStatus] = useState(state);
 
   useEffect(() => {
-    axios
-      .post(API + "autth.php/login", {}, { withCredentials: true })
-      .then((res) => {
-        setState({ isLoggedIn: true, user: res.data });
-        setUser({ ...res.data, password: "" });
-        //}
-      })
-      .catch((res) => {
-        console.log(res);
-      });
-  }, []);
+    setUser(state.user);
+    setStatus(state);
+  }, [state]);
 
   const changeHandler = (e) => {
     const { name, value } = e.target;
@@ -45,59 +25,24 @@ function User() {
   };
 
   const clickHandler = () => {
-    axios
-      .post(
-        //API + `authentication.php`,
-        API + "autth.php/logout",
-        {
-          action: "logout",
-        },
-        { withCredentials: true }
-      )
-      .then((res) => {
-        alert(res.data);
-        //if (res.data.status === 1) {
-        setState({ isLoggedIn: false, user: {} });
-        //}
-        // window.location.href = "/admin";
-      })
-      .catch((res) => {
-        alert(res);
-      });
+    logoutHandler();
   };
 
-  const submitHandler = () => {
+  const submitHandler = (type) => {
+    const newPassword = document.getElementById("new-password").value;
     const oldPassword = md5(
       md5(document.getElementById("old-password").value) +
         "sjdgfsdj(*&*&6234jhsdgfjhsdsdfk&*^UUUdd"
     );
-    const newPassword = document.getElementById("new-password").value;
-    console.log(oldPassword, state.user.password, newPassword.length);
-    if (oldPassword !== state.user.password) alert("Mật khẩu cũ không đúng!");
-    else if (newPassword.length < 6)
+    if (oldPassword !== state.user.password && type === "password")
+      alert("Mật khẩu cũ không đúng!");
+    else if (newPassword.length < 6 && type === "password")
       alert("Vui lòng nhập mật khẩu mới tối thiểu 6 ký tự!");
     else {
       const newUser = { ...user, password: newPassword };
-      axios
-        .post(
-          //API + `authentication.php`,
-          API + "autth.php/editUser",
-          {
-            action: "edit",
-            ...newUser,
-          },
-          { withCredentials: true }
-        )
-        .then((res) => {
-          setState((prev) => ({ ...prev, user: user }));
-          setUser((prev) => ({ ...prev, password: "" }));
-          document.getElementById("new-password").value = "";
-          document.getElementById("old-password").value = "";
-        })
-        .catch((res, status) => {
-          console.log(res, status);
-        });
+      editUser(newUser);
     }
+    setUser((prev) => ({ ...prev, password: "" }));
     document.getElementById("new-password").value = "";
     document.getElementById("old-password").value = "";
   };
@@ -118,7 +63,7 @@ function User() {
     }
   };
 
-  return state.isLoggedIn ? (
+  return status.isLoggedIn ? (
     <>
       <div
         className="signup bg-light d-flex align-items-center"
@@ -376,7 +321,7 @@ function User() {
                 type="button"
                 className="btn btn-primary"
                 data-bs-dismiss="modal"
-                onClick={submitHandler}
+                onClick={() => submitHandler("info")}
               >
                 Hoàn thành
               </button>
@@ -442,7 +387,7 @@ function User() {
                 type="button"
                 className="btn btn-primary"
                 data-bs-dismiss="modal"
-                onClick={submitHandler}
+                onClick={() => submitHandler("password")}
               >
                 Hoàn thành
               </button>
@@ -451,7 +396,7 @@ function User() {
         </div>
       </div>
     </>
-  ) : state.isLoading ? (
+  ) : status.isLoading ? (
     "Loading..."
   ) : (
     <Redirect to="/" />

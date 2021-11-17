@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import API from "../../API/api";
+import React, { useContext, useState } from "react";
 import Header from "../../components/admin/Header";
 import Pagination from "../../components/Pagination";
 import TableProduct from "../../components/admin/TableProduct";
+import { Data } from "../../Context";
 
-function Product({ clickHandler, currUser }) {
+function Product() {
+  const { categories, products, addProduct, editProduct, deleteProduct } =
+    useContext(Data);
   const [currentPage, setCurrentPage] = useState(1);
-  const [categories, setCategories] = useState([]);
   const [status, setStatus] = useState({
     id: "",
     action: "Thêm",
@@ -20,33 +20,6 @@ function Product({ clickHandler, currUser }) {
     price: "",
     discount: "",
   });
-  const [products, setProducts] = useState([]);
-
-  const getData = () => {
-    return axios
-      .post(
-        //API + "product.php",
-        API +'prod.php/listProduct',
-        { action: "list" })
-      .then((response) => {
-        if (response.data.status === 1) setProducts(response.data.productList);
-        else alert(response.data.msg);
-      }).catch(res => {
-        alert(res)
-      });
-  };
-
-  useEffect(() => {
-    getData();
-    axios.post(
-      //API + "category.php"
-      API +'cate.php/listCategory',
-      { action: "list" })
-      .then((response) => {
-        //if (response.data.status === 1)
-          setCategories(response.data);
-    });
-  }, []);
 
   const changeHandler = (e) => {
     const { name, value } = e.target;
@@ -70,60 +43,22 @@ function Product({ clickHandler, currUser }) {
 
   const submitHandler = () => {
     if (status.action === "Thêm") {
-      axios
-        .post(
-          //API + "product.php",
-        API +'prod.php/addProduct',
-        { action: "add", ...product })
-        .then((response) => {
-          if (response.data.status === 2) alert(response.data.msg);
-          else getData();
-          setProduct({
-            title: "",
-            description: "",
-            category_id: "",
-            thumbnail: "",
-            price: "",
-            discount: "",
-          });
-        }).catch(res => {
-          alert(res)
-        });
+      addProduct(product);
     } else {
-      axios
-        .post(
-          //API + "product.php",
-          API+'prod.php/editProduct',
-          {
-          action: "edit",
-          id: status.id,
-          ...product,
-        })
-        .then((response) => {
-          if (response.data.status === 2) alert(response.data.msg);
-          else {
-            setProducts((prev) => {
-              const idx = prev.findIndex((item) => item.id === status.id);
-              prev[idx] = { ...prev[idx], ...product };
-              return prev;
-            });
-          }
-          setProduct({
-            title: "",
-            description: "",
-            category_id: "",
-            thumbnail: "",
-            price: "",
-            discount: "",
-          });
-          setStatus({
-            id: "",
-            action: "Thêm",
-          });
-        }).catch(res => {
-          alert(res)
-        });
+      editProduct(status.id, product);
     }
+    setProduct({
+      title: "",
+      description: "",
+      category_id: "",
+      thumbnail: "",
+      price: "",
+      discount: "",
+    });
+    setStatus({
+      id: "",
+      action: "Thêm",
+    });
   };
 
   const deleteHandler = (id) => {
@@ -131,17 +66,7 @@ function Product({ clickHandler, currUser }) {
       "Bạn có chắc chắn muốn xoá sản phẩm này không?"
     );
     if (option) {
-      axios
-        .post(
-          //API + "product.php",
-          API+'prod.php/deleteProduct',
-          { action: "delete", id: id })
-        .then((response) => {
-          if (response.data.status !== 1) alert(response.data.msg);
-          else setProducts((prev) => prev.filter((item) => item.id !== id));
-        }).catch(res => {
-          alert(res)
-        });
+      deleteProduct(id);
     }
   };
 
@@ -163,11 +88,7 @@ function Product({ clickHandler, currUser }) {
 
   return (
     <div className="container-fluid p-0">
-      <Header
-        clickHandler={clickHandler}
-        currPage="product"
-        currUser={currUser}
-      />
+      <Header currPage="product" />
       <div className="container-fluid">
         <h2 className="text-center my-4">Quản lý sản phẩm</h2>
         <div className="container">

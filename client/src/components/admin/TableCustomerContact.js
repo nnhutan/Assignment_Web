@@ -25,7 +25,7 @@ function TableCustomerContact({ customerContact, deleteHandler, offset }) {
               <td>
                 <button
                   className="btn btn-danger"
-                  onClick={() => deleteHandler(item.id)}
+                  onClick={() => deleteHandler(item.id, true)}
                 >
                   Xóa
                 </button>

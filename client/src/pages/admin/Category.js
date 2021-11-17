@@ -1,38 +1,19 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import API from "../../API/api";
+import React, { useState, useContext } from "react";
 import Header from "../../components/admin/Header";
 import TableCategory from "../../components/admin/TableCategory";
 import Pagination from "../../components/Pagination";
+import { Data } from "../../Context";
 
-function Category({ clickHandler, currUser }) {
+function Category() {
+  const { categories, addCategory, editCategory, deleteCategory } =
+    useContext(Data);
+
   const [status, setStatus] = useState({
     id: "",
     action: "Thêm",
   });
+
   const [category, setCategory] = useState({ name: "" });
-  const [categories, setCategories] = useState([]);
-
-  const getData = () => {
-    axios
-      .post(
-        //API + "category.php",
-        API + "cate.php/listCategory",
-        { action: "list" }
-      )
-      .then((response) => {
-        //if (response.data.status === 1)
-        setCategories(response.data);
-        //else alert(response.data.msg);
-      })
-      .catch((res) => {
-        alert(res);
-      });
-  };
-
-  useEffect(() => {
-    getData();
-  }, []);
 
   const closeHandler = () => {
     setCategory({ name: "" });
@@ -44,51 +25,15 @@ function Category({ clickHandler, currUser }) {
 
   const submitHandler = () => {
     if (status.action === "Thêm") {
-      axios
-        .post(
-          //API + "category.php",
-          API + "cate.php/addCategory",
-          { action: "add", ...category }
-        )
-        .then((response) => {
-          //if (response.data.status === 2) alert(response.data.msg);
-          getData();
-          setCategory({ name: "" });
-        })
-        .catch((res) => {
-          alert(res);
-        });
+      addCategory(category);
     } else {
-      axios
-        .post(
-          //API + "category.php",
-          API + "cate.php/editCategory",
-          {
-            action: "edit",
-            id: status.id,
-            ...category,
-          }
-        )
-        .then((response) => {
-          //if (response.data.status === 2) alert(response.data.msg);
-          //else {
-          setCategories((prev) => {
-            prev[prev.findIndex((item) => item.id === status.id)].name =
-              category.name;
-            return prev;
-          });
-          //}
-          setCategory({ name: "" });
-          setStatus({
-            id: "",
-            action: "Thêm",
-          });
-          alert(response);
-        })
-        .catch((res) => {
-          alert(res);
-        });
+      editCategory(status.id, category);
     }
+    setStatus({
+      id: "",
+      action: "Thêm",
+    });
+    setCategory({ name: "" });
   };
 
   const deleteHandler = (id) => {
@@ -96,20 +41,7 @@ function Category({ clickHandler, currUser }) {
       "Bạn có chắc chắn muốn xoá danh mục này không?"
     );
     if (option) {
-      axios
-        .post(
-          //API + "category.php",
-          API + "cate.php/deleteCategory",
-          { action: "delete", id: id }
-        )
-        .then((response) => {
-          //if (response.data.status === 2) alert(response.data.msg);
-          //else
-          setCategories((prev) => prev.filter((item) => item.id !== id));
-        })
-        .catch((res) => {
-          alert(res);
-        });
+      deleteCategory(id);
     }
   };
 
@@ -132,11 +64,7 @@ function Category({ clickHandler, currUser }) {
 
   return (
     <div className="container-fluid p-0">
-      <Header
-        clickHandler={clickHandler}
-        currPage="category"
-        currUser={currUser}
-      />
+      <Header currPage="category" />
       <div className="container-fluid">
         <h2 className="text-center my-4">Quản lý danh mục sản phẩm</h2>
         <div className="container">

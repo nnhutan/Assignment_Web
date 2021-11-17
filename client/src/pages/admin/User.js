@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import API from "../../API/api";
+import React, { useContext, useState } from "react";
 import Header from "../../components/admin/Header";
 import TableUser from "../../components/admin/TableUser";
 import Pagination from "../../components/Pagination";
+import { Data } from "../../Context";
 
-function User({ clickHandler, currUser }) {
+function User() {
+  const { state, roles, users, addUser, editUserAdminSide, deleteUser } =
+    useContext(Data);
   const [currentPage, setCurrentPage] = useState(1);
-  const [roles, setRoles] = useState([]);
   const [status, setStatus] = useState({
     id: "",
     action: "Thêm",
@@ -20,43 +20,6 @@ function User({ clickHandler, currUser }) {
     address: "",
     password: "",
   });
-  const [users, setUsers] = useState([]);
-
-  const getData = () => {
-    axios
-      .post(
-        //API + "authentication.php",
-        API + "autth.php/userList",
-        { action: "list" },
-        { withCredentials: true }
-      )
-      .then((response) => {
-        //if (response.data.status === 1)
-        setUsers(response.data);
-        //else alert(response.data.msg);
-      })
-      .catch((res) => {
-        alert(res);
-      });
-  };
-
-  useEffect(() => {
-    getData();
-    axios
-      .post(
-        //API + "authentication.php",
-        API + "autth.php/getRole",
-        { action: "role" },
-        { withCredentials: true }
-      )
-      .then((response) => {
-        //if (response.data.status === 1)
-        setRoles(response.data);
-      })
-      .catch((res) => {
-        alert(res);
-      });
-  }, []);
 
   const changeHandler = (e) => {
     const { name, value } = e.target;
@@ -80,58 +43,22 @@ function User({ clickHandler, currUser }) {
 
   const submitHandler = () => {
     if (status.action === "Thêm") {
-      axios
-        .post(
-          API + "authentication.php",
-          { action: "add", ...user },
-          { withCredentials: true }
-        )
-        .then((response) => {
-          if (response.data.status !== 1) alert(response.data.msg);
-          else getData();
-          setUser({
-            fullname: "",
-            role_id: "",
-            email: "",
-            phone_number: "",
-            address: "",
-            password: "",
-          });
-        });
+      addUser(user);
     } else {
-      axios
-        .post(
-          API + "autth.php/editUser",
-          {
-            action: "edit",
-            id: status.id,
-            ...user,
-          },
-          { withCredentials: true }
-        )
-        .then((response) => {
-          setUsers((prev) => {
-            const idx = prev.findIndex((item) => item.id === status.id);
-            prev[idx] = { ...prev[idx], ...user };
-            return prev;
-          });
-          setUser({
-            fullname: "",
-            role_id: "",
-            email: "",
-            phone_number: "",
-            address: "",
-            password: "",
-          });
-          setStatus({
-            id: "",
-            action: "Thêm",
-          });
-        })
-        .catch((res) => {
-          alert(res);
-        });
+      editUserAdminSide(status.id, user);
     }
+    setUser({
+      fullname: "",
+      role_id: "",
+      email: "",
+      phone_number: "",
+      address: "",
+      password: "",
+    });
+    setStatus({
+      id: "",
+      action: "Thêm",
+    });
   };
 
   const deleteHandler = (id) => {
@@ -139,21 +66,7 @@ function User({ clickHandler, currUser }) {
       "Bạn có chắc chắn muốn xoá thành viên này không?"
     );
     if (option) {
-      axios
-        .post(
-          //API + "authentication.php",
-          API + "autth.php/deleteUser",
-          { action: "delete", id: id },
-          { withCredentials: true }
-        )
-        .then((response) => {
-          //if (response.data.status === 2) alert(response.data.msg);
-          //else
-          setUsers((prev) => prev.filter((item) => item.id !== id));
-        })
-        .catch((res) => {
-          alert(res);
-        });
+      deleteUser(id);
     }
   };
 
@@ -175,7 +88,7 @@ function User({ clickHandler, currUser }) {
 
   return (
     <div className="container-fluid p-0">
-      <Header clickHandler={clickHandler} currPage="user" currUser={currUser} />
+      <Header currPage="user" />
       <div className="container-fluid">
         <h2 className="text-center my-4">Quản lý thành viên</h2>
         <div className="container">
@@ -324,7 +237,7 @@ function User({ clickHandler, currUser }) {
             users={currUsers}
             editHandler={editHandler}
             deleteHandler={deleteHandler}
-            currUser={currUser}
+            currUser={state.user}
             offset={(currentPage - 1) * itemPerPage}
           />
           {numberPage > 1 ? (
