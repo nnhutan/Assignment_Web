@@ -13,10 +13,10 @@ function ContextProvider(props) {
 
   const logoutHandler = () => {
     axios
-      .post(API + "autth.php/logout", {}, { withCredentials: true })
+      .post(API + "authentication.php/logout", {}, { withCredentials: true })
       .then((res) => {
-        setState({ isLoggedIn: false, user: {} });
-        window.location.href = "/";
+        setState((prev) => ({ ...prev, isLoggedIn: false, user: {} }));
+        setOrdId("");
       })
       .catch((res) => console.log(res));
   };
@@ -27,32 +27,28 @@ function ContextProvider(props) {
 
   const getRoles = () => {
     axios
-      .post(API + "autth.php/getRole", {}, { withCredentials: true })
+      .post(API + "authentication.php/getRole", {}, { withCredentials: true })
       .then((response) => setRoles(response.data))
       .catch((res) => console.log(res));
   };
 
   const getUsers = () => {
     axios
-      .post(API + "autth.php/userList", {}, { withCredentials: true })
+      .post(API + "authentication.php/userList", {}, { withCredentials: true })
       .then((response) => setUsers(response.data))
       .catch((res) => console.log(res));
   };
 
   const addUser = (user) => {
     axios
-      .post(
-        API + "authentication.php",
-        { action: "add", ...user },
-        { withCredentials: true }
-      )
+      .post(API + "authentication.php", { ...user }, { withCredentials: true })
       .then((response) => getUsers());
   };
 
   const editUserAdminSide = (id, user) => {
     axios
       .post(
-        API + "autth.php/editUser",
+        API + "authentication.php/editUser",
         {
           id: id,
           ...user,
@@ -71,7 +67,11 @@ function ContextProvider(props) {
 
   const deleteUser = (id) => {
     axios
-      .post(API + "autth.php/deleteUser", { id: id }, { withCredentials: true })
+      .post(
+        API + "authentication.php/deleteUser",
+        { id: id },
+        { withCredentials: true }
+      )
       .then((response) =>
         setUsers((prev) => prev.filter((item) => item.id !== id))
       )
@@ -81,7 +81,7 @@ function ContextProvider(props) {
   const editUser = (user) => {
     axios
       .post(
-        API + "autth.php/editUser",
+        API + "authentication.php/editUser",
         {
           ...user,
         },
@@ -99,27 +99,21 @@ function ContextProvider(props) {
 
   const getPublicContact = () => {
     axios
-      .post(API + "cont.php/listContact", {
-        action: "list",
-      })
-      .then((res) => {
-        if (res.data.status === 1) setPublicContact(res.data.contactList);
-      })
-      .catch((res) => {
-        alert(res);
-      });
+      .post(API + "public-contact.php/listContact")
+      .then((res) => setPublicContact(res.data))
+      .catch((res) => alert(res));
   };
 
   const addPublicContact = (contact) => {
     axios
-      .post(API + "cont.php/addContact", { ...contact })
+      .post(API + "public-contact.php/addContact", { ...contact })
       .then((response) => getPublicContact())
       .catch((res) => alert(res));
   };
 
   const editPublicContact = (id, contact) => {
     axios
-      .post(API + "cont.php/editContact", {
+      .post(API + "public-contact.php/editContact", {
         id: id,
         ...contact,
       })
@@ -134,7 +128,7 @@ function ContextProvider(props) {
 
   const deletePublicContact = (id) => {
     axios
-      .post(API + "cont.php/deleteContact", { id: id })
+      .post(API + "public-contact.php/deleteContact", { id: id })
       .then((response) =>
         setPublicContact((prev) => prev.filter((item) => item.id !== id))
       )
@@ -143,9 +137,9 @@ function ContextProvider(props) {
 
   const getCustomerContact = () => {
     axios
-      .post(API + "cust.php/listCustomerContact")
+      .post(API + "customer-contact.php/listCustomerContact")
       .then((response) => {
-        setCustomerContact(response.data.customer_contactList);
+        setCustomerContact(response.data);
       })
       .catch((res) => {
         alert(res);
@@ -154,7 +148,7 @@ function ContextProvider(props) {
 
   const deleteCustomerContact = (id) => {
     axios
-      .post(API + "cust.php/deleteCustomerContact", { id: id })
+      .post(API + "customer-contact.php/deleteCustomerContact", { id: id })
       .then((response) =>
         setCustomerContact((prev) => prev.filter((item) => item.id !== id))
       )
@@ -168,11 +162,8 @@ function ContextProvider(props) {
 
   const getProducts = async () => {
     axios
-      .post(API + "prod.php/listProduct")
-      .then((response) => {
-        if (response.data.status === 1) setProducts(response.data.productList);
-        else alert(response.data.msg);
-      })
+      .post(API + "product.php/listProduct")
+      .then((response) => setProducts(response.data))
       .catch((res) => {
         alert(res);
       });
@@ -180,14 +171,14 @@ function ContextProvider(props) {
 
   const addProduct = (product) => {
     axios
-      .post(API + "prod.php/addProduct", { ...product })
+      .post(API + "product.php/addProduct", { ...product })
       .then((response) => getProducts())
       .catch((res) => alert(res));
   };
 
   const editProduct = (id, product) => {
     axios
-      .post(API + "prod.php/editProduct", {
+      .post(API + "product.php/editProduct", {
         id: id,
         ...product,
       })
@@ -203,7 +194,7 @@ function ContextProvider(props) {
 
   const deleteProduct = (id) => {
     axios
-      .post(API + "prod.php/deleteProduct", { id: id })
+      .post(API + "product.php/deleteProduct", { id: id })
       .then((response) =>
         setProducts((prev) => prev.filter((item) => item.id !== id))
       )
@@ -216,13 +207,13 @@ function ContextProvider(props) {
 
   const getCategories = async () => {
     axios
-      .post(API + "cate.php/listCategory")
+      .post(API + "category.php/listCategory")
       .then((response) => setCategories(response.data));
   };
 
   const addCategory = (category) => {
     axios
-      .post(API + "cate.php/addCategory", { action: "add", ...category })
+      .post(API + "category.php/addCategory", { ...category })
       .then((response) => {
         getCategories();
       })
@@ -233,8 +224,7 @@ function ContextProvider(props) {
 
   const editCategory = (id, category) => {
     axios
-      .post(API + "cate.php/editCategory", {
-        action: "edit",
+      .post(API + "category.php/editCategory", {
         id: id,
         ...category,
       })
@@ -249,7 +239,7 @@ function ContextProvider(props) {
 
   const deleteCategory = (id) => {
     axios
-      .post(API + "cate.php/deleteCategory", { id: id })
+      .post(API + "category.php/deleteCategory", { id: id })
       .then((response) =>
         setCategories((prev) => prev.filter((item) => item.id !== id))
       )
@@ -264,7 +254,7 @@ function ContextProvider(props) {
   const addToCart = (productId) => {
     if (ordId !== "") {
       axios
-        .post(API + "order-.php/addOrderDetail", {
+        .post(API + "order-detail.php/addOrderDetail", {
           order_id: ordId,
           product_id: productId,
           num: 1,
@@ -297,20 +287,15 @@ function ContextProvider(props) {
   const getCart = async (flag, id) => {
     if (flag) {
       axios
-        .post(API + "ord.php/listOrder")
+        .post(API + "order.php/listOrder")
         .then((res) => {
           const orderId =
             res.data[res.data.findIndex((item) => item.user_id === id)].id;
           setOrdId(orderId);
           axios
-            .post(
-              //API + `authentication.php`,
-              API + "order-.php/listOrderDetail",
-              {
-                action: "list",
-                order_id: orderId,
-              }
-            )
+            .post(API + "order-detail.php/listOrderDetail", {
+              order_id: orderId,
+            })
             .then((res) => {
               setProductsInCart(res.data);
               setNumProductInCart(res.data.length);
@@ -322,12 +307,7 @@ function ContextProvider(props) {
         .catch((res) => console.log(res));
     } else {
       axios
-        .post(
-          //API + `authentication.php`,
-          API + "cart.php/listCart",
-          {},
-          { withCredentials: true }
-        )
+        .post(API + "cart.php/listCart", {}, { withCredentials: true })
         .then((res) => {
           setProductsInCart(res.data);
           setNumProductInCart(res.data.length);
@@ -341,7 +321,7 @@ function ContextProvider(props) {
   const deleteProductInCart = (id) => {
     if (ordId !== "") {
       axios
-        .post(API + "order-.php/deleteOrderDetail", {
+        .post(API + "order-detail.php/deleteOrderDetail", {
           id: id,
         })
         .then((res) => {
@@ -371,7 +351,7 @@ function ContextProvider(props) {
   const changeNumOfProductInCart = (e, index, id) => {
     if (ordId !== "") {
       axios
-        .post(API + "order-.php/editOrderDetail", {
+        .post(API + "order-detail.php/editOrderDetail", {
           id: id,
           num: e.target.value,
         })
@@ -409,14 +389,14 @@ function ContextProvider(props) {
 
   const getComments = () => {
     axios
-      .post(API + "com.php/listComment")
+      .post(API + "comment.php/listComment")
       .then((res) => setComments(res.data))
       .catch((res) => console.log(res));
   };
 
   const addComment = (product_id, content) => {
     axios
-      .post(API + "com.php/addComment", {
+      .post(API + "comment.php/addComment", {
         user_id: state.user.id,
         product_id: product_id,
         content: content,
@@ -427,7 +407,7 @@ function ContextProvider(props) {
 
   const deleteComment = (id) => {
     axios
-      .post(API + "com.php/deleteComment", {
+      .post(API + "comment.php/deleteComment", {
         id: id,
       })
       .then((res) =>
@@ -438,7 +418,7 @@ function ContextProvider(props) {
 
   const editComment = (commentEdit) => {
     axios
-      .post(API + "com.php/editComment", {
+      .post(API + "comment.php/editComment", {
         ...commentEdit,
       })
       .then((res) => getComments())
@@ -451,21 +431,21 @@ function ContextProvider(props) {
 
   const getNewsList = () => {
     axios
-      .post(API + "newa.php/listNews")
-      .then((response) => setNewsList(response.data.newsList))
+      .post(API + "news.php/listNews")
+      .then((response) => setNewsList(response.data))
       .catch((res) => alert(res));
   };
 
   const addNews = (news) => {
     axios
-      .post(API + "newa.php/addNews", { ...news })
+      .post(API + "news.php/addNews", { ...news })
       .then((response) => getNewsList())
       .catch((res) => alert(res));
   };
 
   const editNews = (id, news) => {
     axios
-      .post(API + "newa.php/editNews", {
+      .post(API + "news.php/editNews", {
         id: id,
         ...news,
       })
@@ -479,7 +459,7 @@ function ContextProvider(props) {
 
   const deleteNews = (id) => {
     axios
-      .post(API + "newa.php/deleteNews", { id: id })
+      .post(API + "news.php/deleteNews", { id: id })
       .then((response) =>
         setNewsList((prev) => prev.filter((item) => item.id !== id))
       )
@@ -490,7 +470,7 @@ function ContextProvider(props) {
   useEffect(() => {
     const authen = async () => {
       axios
-        .post(API + "autth.php/login", {}, { withCredentials: true })
+        .post(API + "authentication.php/login", {}, { withCredentials: true })
         .then((res) => {
           setState({ isLoggedIn: true, user: res.data });
           getCart(true, res.data.id);
@@ -509,7 +489,8 @@ function ContextProvider(props) {
     getCategories();
     getComments();
     getNewsList();
-  }, []);
+  }, [state.isLoggedIn]);
+
   return (
     <Data.Provider
       value={{

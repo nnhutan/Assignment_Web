@@ -128,8 +128,7 @@ function Signup() {
       e.stopPropagation();
     } else {
       axios
-        .post(API + "autth.php/register", {
-          action: "register",
+        .post(API + "authentication.php/register", {
           role_id: "1",
           ...user,
         })
@@ -138,6 +137,7 @@ function Signup() {
         })
         .catch((res) => {
           alert(res);
+          console.log(res);
         });
     }
   };

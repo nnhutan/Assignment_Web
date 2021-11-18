@@ -1,74 +1,46 @@
 <?php
-session_start();
-header('Access-Control-Allow-Origin:  http://localhost:3000');
-header("Access-Control-Allow-Headers: Content-Type");
 require_once '../database/dbhelper.php';
-require_once '../utils/utility.php';
+require '../utils/rest_api.php';
 
 $_POST = json_decode(file_get_contents('php://input'), true);
-$action = getPost('action');
-switch ($action) {
-    case 'list':
-        listCustomerContact();
-        break;
-    case 'add':
-        addCustomerContact();
-        break;
-    case 'delete':
-        deleteCustomerContact();
-        break;
-}
 
-function listCustomerContact() {
-$sql = 'SELECT * from customer_contact';
-$result = executeResult($sql);
-$res =[
-    "status" => 1,
-    "msg"=> "Success!!!",
-    "customer_contactList"=> $result
-];
-echo json_encode($res);
-}
-
-function addCustomerContact() {
- if (!empty($_POST)) {
-        $lastname = getPost('lastname');
-        $firstname = getPost('firstname');
-        $email = getPost("email");
-        $phone_number = getPost("phone_number");
-
-        $sql = "insert into customer_contact(lastname,firstname,email,phone_number) values ('$lastname','$firstname','$email', '$phone_number')";
-        execute($sql);
-
-        $res = [
-            "status" => 1,
-            "msg" => "success!!!",
-        ];
-    } else {
-        $res = [
-            "status" => 2,
-            "msg" => "failure!!!",
-        ];
+class cust extends rest_api
+{
+    public function listCustomerContact()
+    {
+        $sql = 'SELECT * from customer_contact';
+        $result = executeResult($sql);
+        $this->response(200, $result);
     }
-    echo json_encode($res);
-}
 
-function deleteCustomerContact() {
-if (!empty($_POST)) {
-        $id = getPost("id");
+    public function addCustomerContact()
+    {
+        if (!empty($_POST)) {
+            $lastname = $this->getPost('lastname');
+            $firstname = $this->getPost('firstname');
+            $email = $this->getPost("email");
+            $phone_number = $this->getPost("phone_number");
 
-        $sql = "delete from customer_contact where id =$id";
-        execute($sql);
-
-        $res = [
-            "status" => 1,
-            "msg" => "success!!!",
-        ];
-    } else {
-        $res = [
-            "status" => 2,
-            "msg" => "failure!!!",
-        ];
+            $sql = "insert into customer_contact(lastname,firstname,email,phone_number) values ('$lastname','$firstname','$email', '$phone_number')";
+            execute($sql);
+            $this->response(200, "Success!");
+        } else {
+            $this->response(404, "No entry");
+        }
     }
-    echo json_encode($res);
+
+    public function deleteCustomerContact()
+    {
+        if (!empty($_POST)) {
+            $id = $this->getPost("id");
+
+            $sql = "delete from customer_contact where id =$id";
+            execute($sql);
+
+            $this->response(200, "Success!");
+        } else {
+            $this->response(404, "no entry");
+        }
+    }
 }
+$newCustomer = new cust();

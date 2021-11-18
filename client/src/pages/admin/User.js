@@ -1,5 +1,4 @@
 import React, { useContext, useState } from "react";
-import Header from "../../components/admin/Header";
 import TableUser from "../../components/admin/TableUser";
 import Pagination from "../../components/Pagination";
 import { Data } from "../../Context";
@@ -88,7 +87,6 @@ function User() {
 
   return (
     <div className="container-fluid p-0">
-      <Header currPage="user" />
       <div className="container-fluid">
         <h2 className="text-center my-4">Quản lý thành viên</h2>
         <div className="container">

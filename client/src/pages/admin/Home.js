@@ -1,10 +1,8 @@
 import React from "react";
-import Header from "../../components/admin/Header";
 
 function Home({ clickHandler, currUser }) {
   return (
     <div className="container-fluid p-0">
-      <Header clickHandler={clickHandler} currPage="home" currUser={currUser} />
       <div className="container">
         <div className="row">
           <div className="col-lg-4">

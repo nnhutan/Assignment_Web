@@ -14,7 +14,7 @@ function Header() {
       if (mainNavbar !== null) {
         const topHeader_height =
           document.querySelector(".js-top-header").offsetHeight;
-        if (window.scrollY >= topHeader_height) {
+        if (window.scrollY > topHeader_height) {
           mainNavbar.classList.add("fixed-top");
           const navbar_height = document.querySelector(
             ".main-navbar__navbar"
@@ -26,7 +26,7 @@ function Header() {
         }
       }
     });
-  });
+  }, []);
 
   return (
     <div className="bg-light main-navbar__navbar" id="main-navbar">

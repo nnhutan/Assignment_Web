@@ -1,5 +1,4 @@
 import React, { useState, useContext } from "react";
-import Header from "../../components/admin/Header";
 import TableCategory from "../../components/admin/TableCategory";
 import Pagination from "../../components/Pagination";
 import { Data } from "../../Context";
@@ -64,7 +63,6 @@ function Category() {
 
   return (
     <div className="container-fluid p-0">
-      <Header currPage="category" />
       <div className="container-fluid">
         <h2 className="text-center my-4">Quản lý danh mục sản phẩm</h2>
         <div className="container">

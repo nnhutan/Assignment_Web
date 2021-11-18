@@ -1,5 +1,4 @@
 import React, { useState, useContext } from "react";
-import Header from "../../components/admin/Header";
 import TableCustomerContact from "../../components/admin/TableCustomerContact";
 import Pagination from "../../components/Pagination";
 import { Data } from "../../Context";
@@ -70,7 +69,6 @@ function Contact() {
 
   return (
     <div className="container-fluid p-0">
-      <Header currPage="contact" />
       <div className="container-fluid">
         <h2 className="text-center my-4">
           Quản lý các thông tin liên hệ của công ty

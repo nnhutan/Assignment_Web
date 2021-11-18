@@ -1,5 +1,4 @@
 import React, { useContext, useState } from "react";
-import Header from "../../components/admin/Header";
 import Pagination from "../../components/Pagination";
 import TableProduct from "../../components/admin/TableProduct";
 import { Data } from "../../Context";
@@ -88,7 +87,6 @@ function Product() {
 
   return (
     <div className="container-fluid p-0">
-      <Header currPage="product" />
       <div className="container-fluid">
         <h2 className="text-center my-4">Quản lý sản phẩm</h2>
         <div className="container">

@@ -1,82 +1,69 @@
 <?php
-session_start();
-header('Access-Control-Allow-Origin: *');
-
 require_once '../database/dbhelper.php';
-require_once '../utils/utility.php';
+require '../utils/rest_api.php';
 
 $_POST = json_decode(file_get_contents('php://input'), true);
-$action = getPost('action');
-switch ($action) {
-    case 'list':
-        listOrderDetail();
-        break;
-    case 'add':
-        addOrderDetail();
-        break;
-    case 'edit':
-        editOrderDetail();
-        break;
-    case 'delete':
-        deleteOrderDetail();
-        break;
-}
 
-function listOrderDetail()
+class order extends rest_api
 {
-    $orderId = getPost('order_id');
-
-    $sql = "select Order_Details.*, Product.title, Product.thumbnail from Order_Details left join Product on Product.id = Order_Details.product_id where Order_Details.order_id = $orderId";
-    $result = executeResult($sql);
-   
-        $res = [
-            "status" => 1,
-            "msg" => "success!!!",
-            "orderList" => $result,
-        ];
-
-    echo json_encode($res);
-}
-
-function addOrderDetail()
-{
-    if (!empty($_POST)) {
-        $orderId = getPost('order_id');
-        $product_id = getPost('product_id');
-        $num = getPost('num');
-        $totalMoney = getPost('total_money');
-
-        $sql = "update order_details set product_id = $product_id num = $num total_money = $totalMoney where order_id = $order_id";
-        execute($sql);
-
-        $res = [
-            "status" => 1,
-            "msg" => "success!!!",
-        ];
-    } else {
-        $res = [
-            "status" => 2,
-            "msg" => "failure!!!",
-        ];
+    public function listOrderDetail()
+    {
+        $orderId = $this->getPost('order_id');
+        $sql = "select Order_Detail.*, Product.title, Product.thumbnail, Product.price from Order_Detail left join Product on Product.id = Order_Detail.product_id where Order_Detail.order_id = $orderId";
+        $result = executeResult($sql);
+        $this->response(200, $result);
     }
-    echo json_encode($res);
+
+    public function addOrderDetail()
+    {
+        if (!empty($_POST)) {
+            $orderId = $this->getPost('order_id');
+            $product_id = $this->getPost('product_id');
+            $num = $this->getPost('num');
+
+            $sql = "select * from order_detail where order_id = $orderId and product_id = $product_id";
+            $data = executeResult($sql, true);
+            if ($data != null) {
+                $num = 1 + $data['num'];
+                $sql = "update order_detail set  num = $num where id = " . $data['id'] . "";
+                $status = "update";
+            } else {
+                $sql = "insert into order_detail(order_id, product_id, num) values($orderId, $product_id, $num)";
+                $status = "insert";
+            }
+            execute($sql);
+
+            $this->response(200, $status);
+        } else {
+            $this->response(404, "no entry");
+        }
+    }
+    public function editOrderDetail()
+    {
+        if (!empty($_POST)) {
+            $id = $this->getPost('id');
+            $num = $this->getPost('num');
+
+            $sql = "update order_detail set  num = $num where id = $id";
+            execute($sql);
+
+            $this->response(200);
+        } else {
+            $this->response(404, "no entry");
+        }
+    }
+
+    public function deleteOrderDetail()
+    {
+        $id = $this->getPost('id');
+        if ($id != '') {
+            $sql = "delete from Order_detail where id = $id";
+            execute($sql);
+            $this->response(200);
+        } else {
+            $this->response(404, "No entry");
+        }
+    }
 }
 
-function deleteOrderDetail()
-{
-    $id = getPost('id');
-    if ($id != '') {
-        $sql = "delete from Order_details where id = $id";
-        execute($sql);
-        $res = [
-            "status" => 1,
-            "msg" => "success!!!",
-        ];
-    } else {
-        $res = [
-            "status" => 2,
-            "msg" => "failure!!!",
-        ];
-    }
-    echo json_encode($res);
-}
+$newOrder = new order();

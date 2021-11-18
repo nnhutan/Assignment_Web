@@ -1,5 +1,4 @@
 import React, { useState, useContext } from "react";
-import Header from "../../components/admin/Header";
 import SunEditor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
 import TableNews from "../../components/admin/TableNews";
@@ -67,7 +66,6 @@ function News() {
 
   return (
     <div className="container-fluid p-0">
-      <Header currPage="news" />
       <div className="container-fluid">
         <h2 className="text-center my-4">Quản lý tin tức</h2>
         <div className="container">

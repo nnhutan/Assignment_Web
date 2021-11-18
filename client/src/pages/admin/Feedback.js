@@ -1,5 +1,4 @@
 import React, { useContext, useState } from "react";
-import Header from "../../components/admin/Header";
 import TableComment from "../../components/admin/TableComment";
 import Pagination from "../../components/Pagination";
 import { Data } from "../../Context";
@@ -22,7 +21,6 @@ function Feedback() {
 
   return (
     <div className="container-fluid p-0">
-      <Header currPage="feedback" />
       <div className="container">
         <h2 className="text-center my-4">Quản lý phản hồi, bình luận</h2>
 

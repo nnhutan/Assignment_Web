@@ -1,9 +1,10 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { Data } from "../../Context";
 
-function Header({ currPage }) {
+function Header() {
   const { state, logoutHandler } = useContext(Data);
+  const [currPage, setCurrPage] = useState("home");
   const currUser = state.user;
   return (
     <div className="bg-dark">
@@ -35,6 +36,7 @@ function Header({ currPage }) {
                   }
                   aria-current="page"
                   to="/admin"
+                  onClick={() => setCurrPage("home")}
                 >
                   <i className="bi bi-house me-1"></i>
                   Trang chủ
@@ -44,6 +46,7 @@ function Header({ currPage }) {
                   className={
                     currPage === "category" ? "nav-link active" : "nav-link"
                   }
+                  onClick={() => setCurrPage("category")}
                 >
                   <i className="bi bi-folder me-2"></i>
                   Danh mục
@@ -53,6 +56,7 @@ function Header({ currPage }) {
                     currPage === "product" ? "nav-link active" : "nav-link"
                   }
                   to="/admin/product"
+                  onClick={() => setCurrPage("product")}
                 >
                   <i className="bi bi-file-earmark-text me-2"></i>
                   Sản phẩm
@@ -63,6 +67,7 @@ function Header({ currPage }) {
                     currPage === "user" ? "nav-link active" : "nav-link"
                   }
                   to="/admin/user"
+                  onClick={() => setCurrPage("user")}
                 >
                   <i className="bi bi-people me-2"></i>
                   Người dùng
@@ -73,6 +78,7 @@ function Header({ currPage }) {
                     currPage === "news" ? "nav-link active" : "nav-link"
                   }
                   to="/admin/news"
+                  onClick={() => setCurrPage("news")}
                 >
                   <i className="bi bi-newspaper me-2"></i>
                   Tin tức
@@ -128,6 +134,12 @@ function Header({ currPage }) {
                             : "dropdown-item"
                         }
                         to="/admin/feedback"
+                        onClick={(e) => {
+                          setCurrPage("feedback");
+                          e.target.parentNode.parentNode.classList.toggle(
+                            "show"
+                          );
+                        }}
                       >
                         <i className="bi bi-question-circle me-2 "></i>
                         Phản hồi
@@ -141,6 +153,12 @@ function Header({ currPage }) {
                             : "dropdown-item"
                         }
                         to="/admin/contact"
+                        onClick={(e) => {
+                          setCurrPage("contact");
+                          e.target.parentNode.parentNode.classList.toggle(
+                            "show"
+                          );
+                        }}
                       >
                         <i className="bi bi-person-rolodex me-2"></i>
                         Thông tin liên hệ
@@ -153,6 +171,10 @@ function Header({ currPage }) {
                           : "dropdown-item"
                       }
                       to="/admin/order"
+                      onClick={(e) => {
+                        setCurrPage("order");
+                        e.target.parentNode.parentNode.classList.toggle("show");
+                      }}
                     >
                       <i className="bi bi-minecart me-2"></i>
                       Đơn hàng

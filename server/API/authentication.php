@@ -1,342 +1,218 @@
 <?php
-session_start();
-header('Access-Control-Allow-Origin:  http://localhost:3000');
-header("Access-Control-Allow-Headers: Content-Type");
-header("Access-Control-Allow-Credentials: true");
-
 require_once '../database/dbhelper.php';
-require_once '../utils/utility.php';
+require '../utils/rest_api.php';
 
 $_POST = json_decode(file_get_contents('php://input'), true);
-$action = getPost('action');
-switch ($action) {
-    case 'login':
-        login();
-        break;
-    case 'logout':
-        logout();
-        break;
-    case 'register':
-        register();
-        break;
-    case 'list':
-        userList();
-        break;
-    case 'delete':
-        deleteUser();
-        break;
-    case 'edit':
-        editUser();
-        break;
-    case 'add':
-        addUser();
-        break;
-        case 'role':
-            getRole();
-            break;
-}
 
-function getRole() {
-      $user = getUserToken();
-    if ($user == null) {
-        $res = [
-            "status" => -1,
-            "msg" => "Not login!!!",
-            "userList" => [],
-        ];
-        echo json_encode($res);
-        return;
-    }
-    $sql = "select * from role";
-    $result = executeResult($sql);
-     $res = [
-        "status" => 1,
-        "msg" => "success!!!",
-        "roleList" => $result,
-    ];
-    echo json_encode($res); 
-}
-
-function login()
+class auth extends rest_api
 {
-    $email = $pwd = '';
-    $user = getUserToken();
-    if ($user != null) {
-        $res = [
-            "status" => 1,
-            "msg" => "Login successfully!!!",
-            "user" => $user,
-        ];
-    } else if (!empty($_POST)) {
-        $email = getPost('email');
-        $pwd = getPost('password');
-        $pwd = getSecurityMD5($pwd);
+    protected function getRole()
+    {
+        $user = $this->getUserToken();
 
-        $sql = "select * from User where email = '$email' and password = '$pwd'";
-        $userExist = executeResult($sql, true);
-        if ($userExist == null) {
-            $res = [
-                "status" => 2,
-                "msg" => "Login failed!!!",
-            ];
-        } else {
-            //login successfully
-            $token = getSecurityMD5($userExist['email'] . time());
-
-            // Ho tro viec duy tri login
-            setcookie('token', $token, time() + 7 * 24 * 60 * 60, '/');
-            $_COOKIE['token'] = $token;
-
-            $_SESSION['user'] = $userExist;
-
-            $created_at = date('Y-m-d H:i:s');
-            $userId = $userExist['id'];
-            $sql = "insert into tokens (user_id, token, created_at) values ('$userId', '$token', '$created_at')";
-            execute($sql);
-
-            $res = [
-                "status" => 1,
-                "msg" => "Login successfully!!!",
-                "user" => $userExist,
-            ];
+        if ($user == null) {
+            $this->response(404, "Not login!!");
+            return;
         }
-    } else {
-        $res = [
-            "status" => 2,
-            "msg" => "Login failed!!!",
-        ];
+        $sql = "select * from role";
+        $result = executeResult($sql);
+        $this->response(200, $result);
     }
-    echo json_encode($res);
-    return;
-}
-
-function logout()
-{
-    $user = getUserToken();
-    if ($user != null) {
-        $token = getCookie('token');
-        $id = $user['id'];
-        $sql = "delete from Tokens where user_id = '$id' and token = '$token'";
-        execute($sql);
-        setcookie('token', '', time() - 100, '/');
-    }
-
-    $res = [
-        "status" => 1,
-        "msg" => "Logout successfully!!!",
-    ];
-    echo json_encode($res);
-    session_destroy();
-}
-
-function register()
-{
-    $fullname = $email = $phone = $address = '';
-
-    if (!empty($_POST)) {
-        $fullname = getPost('fullname');
-        $email = getPost('email');
-        $pwd = getPost('password');
-        $phone = getPost('phone');
-        $address = getPost('address');
-        if (empty($fullname) || empty($email) || empty($pwd) || strlen($pwd) < 6) {
-            $res = [
-                "status" => 3,
-                "msg" => "Register failed!!!",
-            ];
-        } else {
-            $userExist = executeResult("select * from User where email = '$email'", true);
-            if ($userExist != null) {
-                $res = [
-                    "status" => 2,
-                    "msg" => "Register failed!!! Email exists!!!",
-                ];
+    protected function login()
+    {
+        $email = $pwd = '';
+        $user = $this->getUserToken();
+        if ($user != null) {
+            $this->response(200, $user);
+        } else
+        if (!empty($_POST)) {
+            $email = $this->getPost('email');
+            $pwd = $this->getPost('password');
+            $pwd = $this->getSecurityMD5($pwd);
+            $sql = "select * from User where email = '$email' and password = '$pwd'";
+            $userExist = executeResult($sql, true);
+            if ($userExist == null) {
+                $this->response(406, "Login fail");
             } else {
-                $created_at = $updated_at = date('Y-m-d H:i:s');
-                $pwd = getSecurityMD5($pwd);
+                //login successfully
+                $token = $this->getSecurityMD5($userExist['email'] . time());
 
-                $sql="select * from user where role_id = 1";
-                $result = executeResult($sql);
-                if(empty($result)){
-                      $sql = "insert into User (fullname, email, password, role_id, phone_number, address, created_at, updated_at) values ('$fullname', '$email', '$pwd', 1, '$phone', '$address', '$created_at', '$updated_at')";
-                }
-                else{
-                        $sql = "insert into User (fullname, email, password, role_id, phone_number, address, created_at, updated_at) values ('$fullname', '$email', '$pwd', 2, '$phone', '$address', '$created_at', '$updated_at')";
-                }
+                // Ho tro viec duy tri login
+                setcookie('token', $token, time() + 7 * 24 * 60 * 60, '/');
+                $_COOKIE['token'] = $token;
 
-            
+                $_SESSION['user'] = $userExist;
+
+                $created_at = date('Y-m-d H:i:s');
+                $userId = $userExist['id'];
+                $sql = "insert into tokens (user_id, token, created_at) values ('$userId', '$token', '$created_at')";
                 execute($sql);
-
-                $res = [
-                    "status" => 1,
-                    "msg" => "Register successfully!!!",
-                ];
+                $this->response(200, $userExist);
             }
-        }
-    } else {
-        $res = [
-            "status" => 2,
-            "msg" => "Register failed!!!",
-        ];
-    }
-
-    echo json_encode($res);
-}
-
-function userList()
-{
-    $user = getUserToken();
-    if ($user == null) {
-        $res = [
-            "status" => -1,
-            "msg" => "Not login!!!",
-            "userList" => [],
-        ];
-        echo json_encode($res);
-        return;
-    }
-    $sql = "select User.*, Role.name as role_name from User left join Role on User.role_id = Role.id";
-    $data = executeResult($sql);
-
-    $res = [
-        "status" => 1,
-        "msg" => "success!!!",
-        "userList" => $data,
-    ];
-    echo json_encode($res);
-}
-
-function deleteUser()
-{
-    $user = getUserToken();
-    if ($user == null) {
-        $res = [
-            "status" => -1,
-            "msg" => "Not login!!!",
-        ];
-        echo json_encode($res);
-        return;
-    }
-    $id = getPost('id');
-    if ($id != '') {
-        $sql = "delete from User where id = $id";
-        execute($sql);
-        $res = [
-            "status" => 1,
-            "msg" => "success!!!",
-            "id" => $id
-        ];
-    } else {
-        $res = [
-            "status" => 2,
-            "msg" => "failure!!!",
-        ];
-    }
-    echo json_encode($res);
-}
-
-function editUser()
-{
-    $user = getUserToken();
-    if ($user == null) {
-        $res = [
-            "status" => -1,
-            "msg" => "Not login!!!",
-        ];
-        echo json_encode($res);
-        return;
-    }
-    if (!empty($_POST)) {
-        $id = getPost('id');
-        $fullname = getPost('fullname');
-        $email = getPost('email');
-        $phone_number = getPost('phone_number');
-        $address = getPost('address');
-        $password = getPost('password');
-        if ($password != '') {
-            $password = getSecurityMD5($password);
-        }
-
-        $created_at = $updated_at = date("Y-m-d H:i:s");
-
-        $role_id = getPost('role_id');
-
-        $sql = "select * from User where email = '$email' and id <> $id";
-        $userItem = executeResult($sql, true);
-
-        if ($userItem != null) {
-            $res = [
-                "status" => 2,
-                "msg" => "Email exists!!!",
-            ];
         } else {
-            if ($password != '') {
-                $sql = "update User set fullname = '$fullname', email = '$email', phone_number = '$phone_number', address = '$address', password = '$password', updated_at = '$updated_at', role_id = $role_id where id = $id";
-            } else {
-                $sql = "update User set fullname = '$fullname', email = '$email', phone_number = '$phone_number', address = '$address', updated_at = '$updated_at', role_id = $role_id where id = $id";
-            }
-            execute($sql);
+            $this->response(402, "Login failed");
+        }
+        return;
+    }
 
-            if(isset($_SESSION['user'])){
-                if($_SESSION['user']['id']==$id) {
-                    $_SESSION['user'] = executeResult("select * from User where id = '$id'", true);
+    protected function logout()
+    {
+        $user = $this->getUserToken();
+        if ($user != null) {
+            $token = $this->getCookie('token');
+            $id = $user['id'];
+            $sql = "delete from Tokens where user_id = '$id' and token = '$token'";
+            execute($sql);
+            setcookie('token', '', time() - 100, '/');
+        }
+        $this->response(200, "Logout successfully!");
+        session_destroy();
+    }
+
+    protected function register()
+    {
+        $fullname = $email = $phone = $address = '';
+        if (!empty($_POST)) {
+            $fullname = $this->getPost('fullname');
+            $email = $this->getPost('email');
+            $pwd = $this->getPost('password');
+            $phone = $this->getPost('phone');
+            $address = $this->getPost('address');
+            if (empty($fullname) || empty($email) || empty($pwd) || strlen($pwd) < 6) {
+                $this->response(400, "Register failed");
+            } else {
+                $userExist = executeResult("select * from User where email = '$email'", true);
+                if ($userExist != null) {
+                    $this->response(400, "Register failed");
+                } else {
+                    $created_at = $updated_at = date('Y-m-d H:i:s');
+                    $pwd = $this->getSecurityMD5($pwd);
+
+                    $sql = "select * from user where role_id = 1";
+                    $result = executeResult($sql);
+                    if (empty($result)) {
+                        $sql = "insert into User (fullname, email, password, role_id, phone_number, address, created_at, updated_at) values ('$fullname', '$email', '$pwd', 1, '$phone', '$address', '$created_at', '$updated_at')";
+                    } else {
+                        $sql = "insert into User (fullname, email, password, role_id, phone_number, address, created_at, updated_at) values ('$fullname', '$email', '$pwd', 2, '$phone', '$address', '$created_at', '$updated_at')";
+                    }
+                    execute($sql);
+                    $this->response(200, "Registered");
                 }
             }
-
-            $res = [
-                "status" => 1,
-                "msg" => "Edit success!!!",
-                "sql" => $sql
-            ];
-        }
-    }
-    echo json_encode($res);
-}
-
-function addUser()
-{
-    $user = getUserToken();
-    if ($user == null) {
-        $res = [
-            "status" => -1,
-            "msg" => "Not login!!!",
-        ];
-        echo json_encode($res);
-        return;
-    }
-    if (!empty($_POST)) {
-        $id = getPost('id');
-        $fullname = getPost('fullname');
-        $email = getPost('email');
-        $phone_number = getPost('phone_number');
-        $address = getPost('address');
-        $password = getPost('password');
-        if ($password != '') {
-            $password = getSecurityMD5($password);
-        }
-
-        $created_at = $updated_at = date("Y-m-d H:i:s");
-
-        $role_id = getPost('role_id');
-
-        $sql = "select * from User where email = '$email'";
-        $userItem = executeResult($sql, true);
-        //insert
-        if ($userItem == null) {
-            //insert
-            $sql = "insert into User(fullname, email, phone_number, address, password, role_id, created_at, updated_at) values ('$fullname', '$email', '$phone_number', '$address', '$password', '$role_id', '$created_at', '$updated_at')";
-            execute($sql);
-            $res = [
-                "status" => 1,
-                "msg" => "Add success!!!",
-            ];
         } else {
-            //Tai khoan da ton tai -> failed
-            $res = [
-                "status" => 2,
-                "msg" => "Email exists!!!",
-            ];
+            $this->response(400, "Register failed");
         }
     }
-    echo json_encode($res);
+
+    protected function userList()
+    {
+        $user = $this->getUserToken();
+        if ($user == null) {
+            $this->response(401, "Not login");
+            return;
+        }
+        $sql = "select User.*, Role.name as role_name from User left join Role on User.role_id = Role.id";
+        $data = executeResult($sql);
+        $this->response(200, $data);
+    }
+
+    protected function deleteUser()
+    {
+        $user = $this->getUserToken();
+        if ($user == null) {
+            $this->response(401, "Not login");
+            return;
+            return;
+        }
+        $id = $this->getPost('id');
+        if ($id != '') {
+            $sql = "delete from User where id = $id";
+            execute($sql);
+            $this->response(200, $id);
+        } else {
+            $this->response(417, "Failed");
+        }
+    }
+
+    protected function editUser()
+    {
+        $user = $this->getUserToken();
+        if ($user == null) {
+            $this->response(401, "Not login");
+            return;
+        }
+        if (!empty($_POST)) {
+            $id = $this->getPost('id');
+            $fullname = $this->getPost('fullname');
+            $email = $this->getPost('email');
+            $phone_number = $this->getPost('phone_number');
+            $address = $this->getPost('address');
+            $password = $this->getPost('password');
+            if ($password != '') {
+                $password = $this->getSecurityMD5($password);
+            }
+            $created_at = $updated_at = date("Y-m-d H:i:s");
+
+            $role_id = $this->getPost('role_id');
+
+            $sql = "select * from User where email = '$email' and id <> $id";
+            $userItem = executeResult($sql, true);
+
+            if ($userItem != null) {
+                $this->response(409, "Email exists");
+            } else {
+                if ($password != '') {
+                    $sql = "update User set fullname = '$fullname', email = '$email', phone_number = '$phone_number', address = '$address', password = '$password', updated_at = '$updated_at', role_id = $role_id where id = $id";
+                } else {
+                    $sql = "update User set fullname = '$fullname', email = '$email', phone_number = '$phone_number', address = '$address', updated_at = '$updated_at', role_id = $role_id where id = $id";
+                }
+                execute($sql);
+                if (isset($_SESSION['user'])) {
+                    if ($_SESSION['user']['id'] == $id) {
+                        $_SESSION['user'] = executeResult("select * from User where id = '$id'", true);
+                    }
+                }
+                $this->response(200, "Success!");
+            }
+        }
+    }
+
+    protected function addUser()
+    {
+        $user = $this->getUserToken();
+        if ($user == null) {
+            $this->response(401, "Not login!");
+            return;
+        }
+        if (!empty($_POST)) {
+            $id = $this->getPost('id');
+            $fullname = $this->getPost('fullname');
+            $email = $this->getPost('email');
+            $phone_number = $this->getPost('phone_number');
+            $address = $this->getPost('address');
+            $password = $this->getPost('password');
+            if ($password != '') {
+                $password = $this->getSecurityMD5($password);
+            }
+
+            $created_at = $updated_at = date("Y-m-d H:i:s");
+
+            $role_id = $this->getPost('role_id');
+
+            $sql = "select * from User where email = '$email'";
+            $userItem = executeResult($sql, true);
+            //insert
+            if ($userItem == null) {
+                //insert
+                $sql = "insert into User(fullname, email, phone_number, address, password, role_id, created_at, updated_at) values ('$fullname', '$email', '$phone_number', '$address', '$password', '$role_id', '$created_at', '$updated_at')";
+                execute($sql);
+                $this->response(200, "Success!");
+            } else {
+                //Tai khoan da ton tai -> failed
+                $this->response(409, "Email exists!");
+            }
+        }
+    }
 }
+
+$new_auth = new auth();

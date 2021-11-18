@@ -23,13 +23,7 @@ function Login() {
 
   const createCart = async (id) => {
     axios
-      .post(
-        API + "ord.php/listOrder",
-        {
-          action: "list",
-        },
-        { withCredentials: true }
-      )
+      .post(API + "order.php/listOrder", {}, { withCredentials: true })
       .then((res) => {
         if (
           res.data.length === 0 ||
@@ -37,7 +31,7 @@ function Login() {
         ) {
           axios
             .post(
-              API + "ord.php/addOrder",
+              API + "order.php/addOrder",
               { user_id: id },
               { withCredentials: true }
             )
@@ -57,7 +51,11 @@ function Login() {
   const submitHandler = (e) => {
     e.preventDefault();
     axios
-      .post(API + "autth.php/login", { ...user }, { withCredentials: true })
+      .post(
+        API + "authentication.php/login",
+        { ...user },
+        { withCredentials: true }
+      )
       .then((res) => {
         createCart(res.data.id);
         setState((prev) => ({ ...prev, isLoggedIn: true, user: res.data }));

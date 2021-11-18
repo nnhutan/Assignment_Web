@@ -1,109 +1,62 @@
 <?php
-session_start();
-header('Access-Control-Allow-Origin: *');
-
 require_once '../database/dbhelper.php';
-require_once '../utils/utility.php';
+require '../utils/rest_api.php';
 
 $_POST = json_decode(file_get_contents('php://input'), true);
-$action = getPost('action');
-switch ($action) {
-    case 'list':
-        listOrder();
-        break;
-    case 'add':
-        addOrder();
-        break;
-    case 'edit':
-        editOrder();
-        break;
-    case 'delete':
-        deleteOrder();
-        break;
-}
 
-function listOrder()
+class ord extends rest_api
 {
-    $sql = "select * from Orders order by status asc, order_date desc";
-    $result = executeResult($sql);
-    if (!empty($result)) {
-        $res = [
-            "status" => 1,
-            "msg" => "success!!!",
-            "orderList" => $result,
-        ];
-    } else {
-        $res = [
-            "status" => 2,
-            "msg" => "failure!!!",
-            "orderList" => [],
-        ];
+    public function listOrder()
+    {
+        $sql = "select * from Orders order by status asc, order_date desc";
+        $result = executeResult($sql);
+        $this->response(200, $result);
     }
-    echo json_encode($res);
+
+    public function addOrder()
+    {
+        if (!empty($_POST)) {
+            $user_id = $this->getPost('user_id');
+            $note = $this->getPost('note');
+            $order_date = date("Y-m-d H:i:s");
+            $status = $this->getPost('status');
+            $total_money = $this->getPost('total_money');
+
+            $sql = "insert into Orders(user_id, note, order_date,status,total_money) values ('$user_id', '$note', '$order_date', '$status', '$total_money')";
+            execute($sql);
+
+            $this->response(200);
+        } else {
+            $this->response(404, );
+        }
+    }
+
+    public function editOrder()
+    {
+        if (!empty($_POST)) {
+            $id = $this->getPost('id');
+            $status = $this->getPost('status');
+
+            $sql = "update orders set status = $status where id = $id";
+            execute($sql);
+
+            $this->response(200);
+        } else {
+            $this->response(404, "No entry");
+        }
+    }
+
+    public function deleteOrder()
+    {
+        $id = $this->getPost('id');
+        if ($id != '') {
+            $sql = "delete from Orders where id = $id";
+            execute($sql);
+            $this->response(200);
+        } else {
+            $this->response(404, "No entry");
+        }
+    }
 }
 
-function addOrder()
-{
-    if (!empty($_POST)) {
-        $user_id = getPost('user_id');
-        $note = getPost('note');
-        $order_date = date("Y-m-d H:i:s");
-        $status = getPost('status');
-        $total_money = getPost('total_money');
-
-        $sql = "insert into Orders(user_id, note, order_date,status,total_money) values ('$user_id', '$note', '$order_date', '$status', '$total_money')";
-        execute($sql);
-
-        $res = [
-            "status" => 1,
-            "msg" => "success!!!",
-        ];
-    } else {
-        $res = [
-            "status" => 2,
-            "msg" => "failure!!!",
-        ];
-    }
-    echo json_encode($res);
-}
-
-function editOrder()
-{
-    if (!empty($_POST)) {
-        $id = getPost('id');
-        $status = getPost('status');
-
-        $sql = "update orders set status = $status where id = $id";
-        execute($sql);
-
-        $res = [
-            "status" => 1,
-            "msg" => "success!!!",
-        ];
-    } else {
-        $res = [
-            "status" => 2,
-            "msg" => "failure!!!",
-        ];
-    }
-    echo json_encode($res);
-}
-
-function deleteOrder()
-{
-    $id = getPost('id');
-    if ($id != '') {
-        $sql = "delete from Orders where id = $id";
-        execute($sql);
-        $res = [
-            "status" => 1,
-            "msg" => "success!!!",
-        ];
-    } else {
-        $res = [
-            "status" => 2,
-            "msg" => "failure!!!",
-        ];
-    }
-    echo json_encode($res);
-}
+$newList = new ord();
