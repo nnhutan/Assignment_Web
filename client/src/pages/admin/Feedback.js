@@ -23,12 +23,13 @@ function Feedback() {
     <div className="container-fluid p-0">
       <div className="container">
         <h2 className="text-center my-4">Quản lý phản hồi, bình luận</h2>
-
-        <TableComment
-          comments={currComments}
-          deleteHandler={deleteHandler}
-          offset={offset}
-        />
+        <div className="overflow-auto">
+          <TableComment
+            comments={currComments}
+            deleteHandler={deleteHandler}
+            offset={offset}
+          />
+        </div>
         {numberPage > 1 ? (
           <Pagination
             numberPage={numberPage}

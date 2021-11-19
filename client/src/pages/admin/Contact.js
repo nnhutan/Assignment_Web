@@ -210,11 +210,13 @@ function Contact() {
           Quản lý các thông tin liên hệ của khách hàng
         </h2>
         <div className="container">
-          <TableCustomerContact
-            customerContact={currDisplay}
-            deleteHandler={deleteHandler}
-            offset={offset}
-          />
+          <div className="overflow-auto">
+            <TableCustomerContact
+              customerContact={currDisplay}
+              deleteHandler={deleteHandler}
+              offset={offset}
+            />
+          </div>
           {numberPage > 1 ? (
             <Pagination
               numberPage={numberPage}

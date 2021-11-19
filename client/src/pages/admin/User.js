@@ -231,13 +231,15 @@ function User() {
               </div>
             </div>
           </div>
-          <TableUser
-            users={currUsers}
-            editHandler={editHandler}
-            deleteHandler={deleteHandler}
-            currUser={state.user}
-            offset={(currentPage - 1) * itemPerPage}
-          />
+          <div className="overflow-auto">
+            <TableUser
+              users={currUsers}
+              editHandler={editHandler}
+              deleteHandler={deleteHandler}
+              currUser={state.user}
+              offset={(currentPage - 1) * itemPerPage}
+            />
+          </div>
           {numberPage > 1 ? (
             <Pagination
               numberPage={numberPage}

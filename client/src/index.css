@@ -7,3 +7,11 @@
   transform: translateY(20px);
   transition: transform 0.3s;
 }
+
+.home-dashboard .card {
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+}
+.home-dashboard .card:hover {
+  transform: translateY(-2px);
+}

@@ -139,12 +139,14 @@ function Category() {
               </div>
             </div>
           </div>
-          <TableCategory
-            categories={currCategories}
-            editHandler={editHandler}
-            deleteHandler={deleteHandler}
-            offset={(currentPage - 1) * itemPerPage}
-          />
+          <div className="overflow-auto">
+            <TableCategory
+              categories={currCategories}
+              editHandler={editHandler}
+              deleteHandler={deleteHandler}
+              offset={(currentPage - 1) * itemPerPage}
+            />
+          </div>
           {numberPage > 1 ? (
             <Pagination
               numberPage={numberPage}

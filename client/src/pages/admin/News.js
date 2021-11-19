@@ -189,13 +189,15 @@ function News() {
               </div>
             </div>
           </div>
-          <TableNews
-            newsList={currDisplay}
-            editHandler={editHandler}
-            deleteHandler={deleteHandler}
-            seeDetail={seeDetail}
-            offset={offset}
-          />
+          <div className="overflow-auto">
+            <TableNews
+              newsList={currDisplay}
+              editHandler={editHandler}
+              deleteHandler={deleteHandler}
+              seeDetail={seeDetail}
+              offset={offset}
+            />
+          </div>
           {numberPage > 1 ? (
             <Pagination
               numberPage={numberPage}

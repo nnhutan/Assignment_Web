@@ -219,13 +219,14 @@ function Product() {
               </div>
             </div>
           </div>
-
-          <TableProduct
-            products={currProducts}
-            editHandler={editHandler}
-            deleteHandler={deleteHandler}
-            offset={(currentPage - 1) * productPerPage}
-          />
+          <div className="overflow-auto">
+            <TableProduct
+              products={currProducts}
+              editHandler={editHandler}
+              deleteHandler={deleteHandler}
+              offset={(currentPage - 1) * productPerPage}
+            />
+          </div>
 
           {numberPage > 1 ? (
             <Pagination
