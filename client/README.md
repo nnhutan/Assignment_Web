@@ -1,6 +1,7 @@
 # Start
 - `cd client`
 - `npm install` to install all package
+- 'npm install react-icons --save' to install icons
 - `npm start`
 
 # Getting Started with Create React App
