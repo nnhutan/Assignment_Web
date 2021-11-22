@@ -5,6 +5,8 @@ import API from "./API/api";
 const Data = createContext();
 
 function ContextProvider(props) {
+  const [currPage, setCurrage] = useState("home");
+
   const [state, setState] = useState({
     isLoading: true,
     isLoggedIn: false,
@@ -429,7 +431,7 @@ function ContextProvider(props) {
   // NEWS
   const [newsList, setNewsList] = useState([]);
 
-  const getNewsList = () => {
+  const getNewsList = async () => {
     axios
       .post(API + "news.php/listNews")
       .then((response) => setNewsList(response.data))
@@ -496,6 +498,8 @@ function ContextProvider(props) {
       value={{
         state,
         setState,
+        currPage,
+        setCurrage,
         roles,
         users,
         addUser,

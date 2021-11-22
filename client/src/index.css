@@ -15,3 +15,17 @@
 .home-dashboard .card:hover {
   transform: translateY(-2px);
 }
+
+#liveAlertPlaceholder {
+  position: fixed;
+  right: 0;
+  top: 30%;
+}
+
+.footer a:hover {
+  color: #ccc !important;
+}
+
+.modal-body figure img {
+  width: 100%;
+}

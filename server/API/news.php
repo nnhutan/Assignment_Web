@@ -8,7 +8,7 @@ class newa extends rest_api
 {
     public function listNews()
     {
-        $sql = 'SELECT * from news';
+        $sql = 'SELECT * from news order by updated_at desc';
         $result = executeResult($sql);
         $this->response(200, $result);
     }

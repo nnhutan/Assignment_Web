@@ -1,12 +1,11 @@
-import React, { useEffect, useContext, useState } from "react";
+import React, { useEffect, useContext } from "react";
+import { Data } from "../Context";
 import { Link } from "react-router-dom";
 import logo from "../logo.png";
-import { Data } from "../Context";
 
 function Header() {
   const DataGlobal = useContext(Data);
-  const { numProductInCart } = DataGlobal;
-  const [currPage, setCurrage] = useState("home");
+  const { numProductInCart, currPage, setCurrage } = DataGlobal;
 
   useEffect(() => {
     window.addEventListener("scroll", function () {
@@ -33,7 +32,11 @@ function Header() {
       <div className="container">
         <nav className="navbar  navbar-expand-lg navbar-light bg-light ">
           <div className="container-fluid">
-            <Link className="navbar-brand d-flex align-items-center" to="/">
+            <Link
+              className="navbar-brand d-flex align-items-center"
+              to="/"
+              onClick={() => setCurrage("home")}
+            >
               <img src={logo} alt="logo" />
             </Link>
             <button

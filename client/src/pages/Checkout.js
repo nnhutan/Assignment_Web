@@ -5,7 +5,11 @@ import { Data } from "../Context";
 
 function Checkout() {
   const DataGlobal = useContext(Data);
-  const { productsInCart } = DataGlobal;
+  const { productsInCart, deleteProductInCart } = DataGlobal;
+
+  const resetCart = () => {
+    productsInCart.map((item) => deleteProductInCart(item.id));
+  };
 
   const totalProductMoney = productsInCart.reduce(
     (a, b) => a + b.price * b.num,
@@ -215,6 +219,7 @@ function Checkout() {
                   type="button"
                   className="btn btn-primary mb-2 me-2"
                   data-bs-dismiss="modal"
+                  onClick={resetCart}
                 >
                   Tiếp tục mua sắm <i className="bi bi-arrow-right"></i>
                 </button>
